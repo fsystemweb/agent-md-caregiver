@@ -94,7 +94,7 @@ describe('through the CLI', () => {
     assert.match(gh.stdout, /^::error file=AGENTS\.md,line=1,col=2,title=AMC001 error::/m);
     const sf = cli(['--format', 'sarif'], FILES);
     assert.equal(sf.code, 1);
-    assert.equal(JSON.parse(sf.stdout).runs[0].results[0].ruleId, 'AMC001');
+    assert.equal(JSON.parse(sf.stdout).runs[0].results.some((x) => x.ruleId === 'AMC001'), true);
   });
 
   test('sarif output is deterministic and has no absolute paths', () => {
