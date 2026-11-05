@@ -3,11 +3,15 @@
   "version": "0.0.0",
   "description": "Checks AGENTS.md, CLAUDE.md and codex.md against the actual repo: dead commands, renamed paths, contradicting instructions.",
   "type": "module",
+  "bin": {
+    "agent-md-caregiver": "bin/agent-md-caregiver.js"
+  },
   "license": "MIT",
   "engines": {
     "node": ">=20"
   },
   "files": [
+    "bin",
     "src",
     "assets/logo.svg",
     "README.md",

@@ -184,6 +184,7 @@ test("the repo's own AGENTS.md yields exactly the claims it actually makes", () 
     [
       ['path', 'PLAN.md'],
       ['command', 'npm test'],
+      ['command', 'node src/cli.js --help'],
       ['path', 'CONTRIBUTING.md'],
     ],
   );

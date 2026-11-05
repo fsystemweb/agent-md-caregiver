@@ -4,6 +4,7 @@
 
 ## Commands
 - Test: `npm test`
+- Run the CLI: `node src/cli.js --help`
 - Node: 20 or newer, ESM only, no build step
 
 ## Conventions
