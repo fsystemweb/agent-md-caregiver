@@ -13,7 +13,7 @@
   <a href="LICENSE">MIT</a> · Node ≥ 20 · zero runtime dependencies · offline and deterministic
 </p>
 
-> **Status: pre-alpha.** The plan is in [PLAN.md](PLAN.md) and the tool lands PR by PR. Working today: `AMC001`, `AMC002`, `AMC005` and the CLI. The rest of the rules in the table below are still to come. The demo output is real; a recording follows in the release PR.
+> **Status: pre-alpha.** The plan is in [PLAN.md](PLAN.md) and the tool lands PR by PR. All eleven rules and the CLI work today (`pretty` and `json` output). Still to come: the `github` and `sarif` formats and CI. The demo output is real; a recording follows in the release PR.
 
 ## Why
 
@@ -93,7 +93,13 @@ npx agent-md-caregiver --explain AMC002
 
 Exit codes: `0` clean · `1` findings at or above the threshold · `2` usage or internal error.
 
-Suppress a false positive with `<!-- amc-ignore-next-line -->`. Tune severity with `--rule AMC007=off` or `.agentmdcaregiver.json`.
+Suppress a false positive with `<!-- amc-ignore-next-line -->`. Tune severity with `--rule AMC007=off` or a `.agentmdcaregiver.json` in the repo root:
+
+```json
+{ "maxLines": 200, "strict": false, "rules": { "AMC008": "off", "AMC006": "error" } }
+```
+
+Command-line options win over the file. An invalid file is an error (exit 2), never silently ignored.
 
 ### Using it from a coding agent
 

@@ -2,7 +2,8 @@
 import { existsSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { HELP, parseCli, UsageError } from './args.js';
+import { DEFAULT_MAX_LINES, HELP, parseCli, UsageError } from './args.js';
+import { loadConfig } from './config.js';
 import { discover, resolveTargets } from './discover.js';
 import { INIT_TEMPLATE } from './init-template.js';
 import { exitCodeFor, lint } from './lint.js';
@@ -85,7 +86,11 @@ function runInner(argv, io) {
 
   const repo = createRepoContext(root);
   const files = opts.paths.length ? resolveTargets(repo, opts.paths, io.cwd) : discover(repo);
-  const result = lint(repo, files, { maxLines: opts.maxLines, ruleLevels: opts.ruleLevels });
+  const config = loadConfig(root);
+  const result = lint(repo, files, {
+    maxLines: opts.maxLines ?? config.maxLines ?? DEFAULT_MAX_LINES,
+    ruleLevels: { ...config.rules, ...opts.ruleLevels },
+  });
 
   if (opts.format === 'json') {
     io.stdout.write(formatJson(result, { version: pkg.version }));
@@ -93,7 +98,7 @@ function runInner(argv, io) {
     const color = Boolean(io.isTTY) && !opts.noColor && !('NO_COLOR' in io.env);
     io.stdout.write(formatPretty(result, { color }));
   }
-  return exitCodeFor(result.findings, opts.strict);
+  return exitCodeFor(result.findings, opts.strict || Boolean(config.strict));
 }
 
 /** Entry point shared by `node src/cli.js` and the `bin` script. */

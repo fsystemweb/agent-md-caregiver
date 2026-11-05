@@ -4,6 +4,12 @@ import { pathMissing } from './amc002-path-missing.js';
 import { contradiction } from './amc003-contradiction.js';
 import { packageManagerMismatch } from './amc004-package-manager-mismatch.js';
 import { brokenImport } from './amc005-broken-import.js';
+import { vagueInstruction } from './amc006-vague-instruction.js';
+import { tooLong } from './amc007-too-long.js';
+import { treeDump } from './amc008-tree-dump.js';
+import { missingBoundaries } from './amc009-missing-boundaries.js';
+import { legacyFilename } from './amc010-legacy-filename.js';
+import { duplicateInstruction } from './amc011-duplicate-instruction.js';
 
 /**
  * @typedef {'info' | 'warn' | 'error'} Severity
@@ -32,7 +38,7 @@ import { brokenImport } from './amc005-broken-import.js';
  */
 
 /** @type {Rule[]} All rules, in id order. */
-export const RULES = [emptyFile, commandNotFound, pathMissing, contradiction, packageManagerMismatch, brokenImport];
+export const RULES = [emptyFile, commandNotFound, pathMissing, contradiction, packageManagerMismatch, brokenImport, vagueInstruction, tooLong, treeDump, missingBoundaries, legacyFilename, duplicateInstruction];
 
 /**
  * @param {string} id  Case-insensitive.

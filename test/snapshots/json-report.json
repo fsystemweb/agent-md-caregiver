@@ -30,12 +30,22 @@
       "col": 1,
       "evidence": "",
       "suggestion": "Add build and test commands, conventions and boundaries, or delete the file."
+    },
+    {
+      "ruleId": "AMC010",
+      "severity": "info",
+      "message": "`codex.md` is a legacy name; AGENTS.md is the shared one",
+      "file": "packages/b/codex.md",
+      "line": 1,
+      "col": 1,
+      "evidence": "",
+      "suggestion": "Rename it: `git mv packages/b/codex.md packages/b/AGENTS.md`."
     }
   ],
   "summary": {
     "files": 4,
     "errors": 0,
     "warnings": 0,
-    "infos": 2
+    "infos": 3
   }
 }
