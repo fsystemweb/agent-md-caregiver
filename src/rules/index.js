@@ -1,6 +1,8 @@
 import { emptyFile } from './amc000-empty-file.js';
 import { commandNotFound } from './amc001-command-not-found.js';
 import { pathMissing } from './amc002-path-missing.js';
+import { contradiction } from './amc003-contradiction.js';
+import { packageManagerMismatch } from './amc004-package-manager-mismatch.js';
 import { brokenImport } from './amc005-broken-import.js';
 
 /**
@@ -30,7 +32,7 @@ import { brokenImport } from './amc005-broken-import.js';
  */
 
 /** @type {Rule[]} All rules, in id order. */
-export const RULES = [emptyFile, commandNotFound, pathMissing, brokenImport];
+export const RULES = [emptyFile, commandNotFound, pathMissing, contradiction, packageManagerMismatch, brokenImport];
 
 /**
  * @param {string} id  Case-insensitive.
