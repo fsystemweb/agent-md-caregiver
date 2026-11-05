@@ -13,7 +13,7 @@ export class UsageError extends Error {}
  * @property {string[]} paths
  * @property {string | undefined} root
  * @property {string} format
- * @property {number} maxLines
+ * @property {number | undefined} maxLines  Undefined when not given, so the config file or the default applies.
  * @property {Record<string, import('./rules/index.js').Severity | 'off'>} ruleLevels
  * @property {boolean} strict
  * @property {boolean} init
@@ -59,7 +59,7 @@ export function parseCli(argv) {
     throw new UsageError(`--format must be one of ${ALL_FORMATS.join(', ')} (got "${format}")`);
   }
 
-  let maxLines = DEFAULT_MAX_LINES;
+  let maxLines;
   if (values['max-lines'] !== undefined) {
     if (!/^[1-9]\d*$/.test(values['max-lines'])) {
       throw new UsageError(`--max-lines must be a positive integer (got "${values['max-lines']}")`);
@@ -121,6 +121,9 @@ Options:
   --no-color           Disable colors (NO_COLOR is also respected)
   -v, --version        Print the version
   -h, --help           Show this help
+
+Config: an optional .agentmdcaregiver.json in the repo root can set maxLines, strict and rules
+(for example {"rules": {"AMC008": "off"}}). Command-line options win over it.
 
 Exit codes:
   0  clean (info findings never fail the run)

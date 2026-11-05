@@ -17,7 +17,7 @@ after(() => cleanups.forEach((fn) => fn()));
 
 /** A repo with a clean file, empty files (the AMC000 stub fires on them), and files that must not be found. */
 const FILES = {
-  'AGENTS.md': '# Project\n\nRun `npm test`.\n',
+  'AGENTS.md': '# Project\n\nRun `npm test`.\n\n## Boundaries\n- Never: commit secrets.\n',
   'CLAUDE.md': '@AGENTS.md\n',
   'packages/a/AGENTS.md': '',
   'packages/b/codex.md': '\n',
@@ -120,7 +120,7 @@ describe('exit codes and rule levels', () => {
     assert.equal(cli(['--rule', 'AMC000=error']).code, 1);
     assert.equal(cli(['--rule', 'amc000=warn']).code, 0);
     assert.equal(cli(['--rule', 'AMC000=warn', '--strict']).code, 1);
-    const off = cli(['--rule', 'AMC000=off', '--format', 'json']);
+    const off = cli(['--rule', 'AMC000=off', '--rule', 'AMC010=off', '--format', 'json']);
     assert.equal(off.code, 0);
     assert.deepEqual(JSON.parse(off.stdout).findings, []);
   });
@@ -227,7 +227,7 @@ describe('reporters', () => {
     assert.deepEqual(Object.keys(report.findings[0]), [
       'ruleId', 'severity', 'message', 'file', 'line', 'col', 'evidence', 'suggestion',
     ]);
-    assert.deepEqual(report.summary, { files: 4, errors: 0, warnings: 0, infos: 2 });
+    assert.deepEqual(report.summary, { files: 4, errors: 0, warnings: 0, infos: 3 });
     assert.ok(!a.includes(process.cwd()), 'no absolute paths');
   });
 
@@ -243,15 +243,17 @@ describe('reporters', () => {
         'packages/b/codex.md',
         '  1:1     info   Instruction file is empty  AMC000',
         '          fix: Add build and test commands, conventions and boundaries, or delete the file.',
+        '  1:1     info   `codex.md` is a legacy name; AGENTS.md is the shared one  AMC010',
+        '          fix: Rename it: `git mv packages/b/codex.md packages/b/AGENTS.md`.',
         '',
-        '4 files checked: 0 error(s), 0 warning(s), 2 info.',
+        '4 files checked: 0 error(s), 0 warning(s), 3 info.',
         '',
       ].join('\n'),
     );
   });
 
   test('pretty report: clean run, and color only on a TTY without NO_COLOR', () => {
-    const clean = { 'AGENTS.md': '# Hi\n\nRun `npm test`.\n' };
+    const clean = { 'AGENTS.md': '# Hi\n\nRun `npm test`.\n\n## Boundaries\n- Never: commit secrets.\n' };
     assert.equal(cli([], { files: clean }).stdout, '1 file checked, no problems found.\n');
     const tty = cli([], { io: { isTTY: true } }).stdout;
     assert.ok(tty.includes('\u001b['));
