@@ -9,6 +9,7 @@
  * @property {number} col    1-based, UTF-16 code units, points at the start of `text` in the source line.
  * @property {string} raw    Source text the claim came from.
  * @property {'fence' | 'inline-code' | 'link' | 'import'} [via]  How a command or path claim was written.
+ * @property {string} [dir]      Command claims in fenced blocks: directory set by an earlier `cd` (repo-relative), or '?' if unknown.
  * @property {string} [verb]     Directive claims only: always, never, must, must not, do not, don't, prefer, use.
  * @property {string} [subject]  Directive claims only: package-manager, indentation, test-runner, language-version.
  */

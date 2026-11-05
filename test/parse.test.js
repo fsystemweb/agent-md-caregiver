@@ -189,3 +189,34 @@ test("the repo's own AGENTS.md yields exactly the claims it actually makes", () 
     ],
   );
 });
+
+test('commands in a fence carry the directory set by cd', () => {
+  const src = [
+    '```sh',
+    'npm test',
+    'cd frontend && npm run dev',
+    'pnpm build',
+    'cd ../x',
+    'make',
+    '```',
+    '```sh',
+    'npm run fresh-block',
+    '```',
+  ].join('\n');
+  const { claims } = parse(src);
+  assert.deepEqual(
+    claims.map((c) => [c.text, c.dir]),
+    [
+      ['npm test', undefined],
+      ['npm run dev', 'frontend'],
+      ['pnpm build', 'frontend'],
+      ['make', 'x'],
+      ['npm run fresh-block', undefined],
+    ],
+  );
+  assert.deepEqual(parse('```sh\ncd $DIR\nnpm test\n```').claims[0].dir, '?');
+  assert.deepEqual(parse('```sh\ncd a\ncd b\nnpm test\n```').claims[0].dir, 'a/b');
+  assert.deepEqual(parse('```sh\ncd /abs\nnpm test\n```').claims[0].dir, '?');
+  assert.deepEqual(parse('```sh\ncd a\ncd ../..\nnpm test\n```').claims[0].dir, '?');
+  assert.deepEqual(parse('```sh\ncd ./\nnpm test\n```').claims[0].dir, undefined);
+});

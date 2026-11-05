@@ -29,3 +29,13 @@ export function parseMakeTargets(text) {
   }
   return [...targets].sort();
 }
+
+/**
+ * Can we trust the target list? Not if the Makefile pulls in other files (`include`)
+ * or has a catch-all rule (`%:`, `.DEFAULT:`), because targets may come from elsewhere.
+ * @param {string} text
+ * @returns {boolean}
+ */
+export function isOpaqueMakefile(text) {
+  return /^(?:-?include|sinclude)\s/m.test(text) || /^(?:%|\.DEFAULT)\s*::?(?!=)/m.test(text);
+}

@@ -1,7 +1,6 @@
 /**
- * AMC000 is a pipeline stub: it exists so the CLI, reporters and exit codes can be tested
- * end to end before the real rules (AMC001 and up) land. It flags instruction files with
- * no content at all, which is also a real problem worth reporting.
+ * AMC000 started as the pipeline stub from PR 3 and stays as a small real rule: it flags
+ * instruction files with no content at all.
  * @type {import('./index.js').Rule}
  */
 export const emptyFile = {

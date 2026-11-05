@@ -1,3 +1,4 @@
+import { posix } from 'node:path';
 import { hasPlaceholder, makeClaim } from './util.js';
 
 const TOOL = /^(npm|pnpm|yarn|bun|bunx|npx|pnpx|make|node|python3?|pytest)(?:\s+(.+))?$/;
@@ -59,6 +60,8 @@ export function splitSegments(line) {
  */
 export function commandsFromFence(body, file) {
   const claims = [];
+  /** Directory set by `cd`/`pushd` earlier in this block: '' = unchanged, '?' = unknown. */
+  let dir = '';
   for (let i = 0; i < body.length; i++) {
     const { n } = body[i];
     let source = body[i].text;
@@ -72,10 +75,17 @@ export function commandsFromFence(body, file) {
     const content = joined.slice(promptLen);
     if (!content.trim() || /^\s*#/.test(content)) continue;
     for (const seg of splitSegments(content)) {
+      const cd = /^\s*(cd|pushd|popd)(?:\s+(.*?))?\s*$/.exec(seg.text);
+      if (cd) {
+        dir = nextDir(dir, cd[1], cd[2]);
+        continue;
+      }
       const cmd = parseCommandSegment(seg.text, true);
       if (!cmd) continue;
       const col = promptLen + seg.offset + cmd.offset + 1;
-      claims.push(makeClaim('command', cmd.text, file, n, col, source, { via: 'fence' }));
+      claims.push(
+        makeClaim('command', cmd.text, file, n, col, source, dir ? { via: 'fence', dir } : { via: 'fence' }),
+      );
     }
   }
   return claims;
@@ -95,4 +105,21 @@ export function commandFromInline(content, file, line, col, raw) {
   const cmd = parseCommandSegment(content, false);
   if (!cmd) return null;
   return makeClaim('command', cmd.text, file, line, col + cmd.offset, raw, { via: 'inline-code' });
+}
+
+/**
+ * Track the working directory through `cd`, so later commands know where they run.
+ * Anything we cannot resolve inside the repo becomes '?'.
+ * @param {string} dir
+ * @param {string} verb
+ * @param {string | undefined} arg
+ * @returns {string}
+ */
+function nextDir(dir, verb, arg) {
+  if (verb === 'popd' || !arg) return '?';
+  const target = arg.replace(/^['"]|['"]$/g, '');
+  if (dir === '?' || hasPlaceholder(target) || target === '-' || /^(?:\/|~|[A-Za-z]:)/.test(target)) return '?';
+  const next = posix.normalize(posix.join(dir || '.', target)).replace(/\/+$/, '');
+  if (next === '..' || next.startsWith('../')) return '?';
+  return next === '.' ? '' : next;
 }

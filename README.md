@@ -13,7 +13,7 @@
   <a href="LICENSE">MIT</a> · Node ≥ 20 · zero runtime dependencies · offline and deterministic
 </p>
 
-> **Status: pre-alpha, design phase.** The plan is in [PLAN.md](PLAN.md) and the tool lands PR by PR. The demo below is a **preview of the target output**, not a recording. It will be replaced with a real one in the release PR.
+> **Status: pre-alpha.** The plan is in [PLAN.md](PLAN.md) and the tool lands PR by PR. Working today: `AMC001`, `AMC002`, `AMC005` and the CLI. The rest of the rules in the table below are still to come. The demo output is real; a recording follows in the release PR.
 
 ## Why
 
@@ -39,15 +39,17 @@ Everyone writing agent instruction files has stale ones. A script gets renamed, 
 
 Details and severities are in [PLAN.md](PLAN.md#33-rules-srcrules-one-file-per-rule-one-test-file-per-rule).
 
-## Demo (preview of target output)
+## Demo
 
 Given this `AGENTS.md`:
 
 ```md
 # Acme API
 
+@docs/code-style.md
+
 ## Commands
-- Install: `pnpm install`
+- Install: `npm install`
 - Test: `npm run test:unit`
 - Lint: `npm run lint:fix`
 
@@ -55,21 +57,31 @@ Given this `AGENTS.md`:
 - HTTP handlers live in `src/routes/users.ts`
 ```
 
-and a repo where the script is called `test`, there is no `lint:fix`, the file was renamed to `src/routes/user.ts`, and the lockfile is `package-lock.json`:
+and a repo where the only scripts are `test` and `build`, and git history shows `docs/code-style.md` was renamed to `docs/style.md` and `src/routes/users.ts` to `src/routes/user.ts`:
 
 ```text
-$ npx agent-md-caregiver
+$ node src/cli.js
 
 AGENTS.md
-  4:11  error  AMC004  File says `pnpm` but the repo uses npm (package-lock.json found)
-  5:9   error  AMC001  `npm run test:unit` — no such script. Did you mean `test`?
-  6:9   error  AMC001  `npm run lint:fix` — no such script. Available: test, build
-  9:32  error  AMC002  `src/routes/users.ts` does not exist. Renamed to `src/routes/user.ts` (git, 3 days ago)
+  3:2     error  Import `docs/code-style.md` does not exist  AMC005
+          > @docs/code-style.md
+          fix: Renamed to `docs/style.md` in git history. Update the import.
+  7:10    error  `npm run test:unit`: no such script "test:unit" in package.json  AMC001
+          > `npm run test:unit`
+          fix: Did you mean `npm run test`?
+  8:10    error  `npm run lint:fix`: no such script "lint:fix" in package.json  AMC001
+          > `npm run lint:fix`
+          fix: Add a "lint:fix" script to package.json or remove this command. Available scripts: build, test.
+  11:26   error  `src/routes/users.ts` does not exist  AMC002
+          > `src/routes/users.ts`
+          fix: Renamed to `src/routes/user.ts` in git history. Replace the path.
 
-✖ 4 problems (4 errors, 0 warnings)
+1 file checked: 4 error(s), 0 warning(s), 0 info.
 ```
 
-## Usage (planned CLI)
+The exit code is `1`. `test/readme-demo.test.js` rebuilds that repo and checks this output line by line, so the example cannot drift from the tool.
+
+## Usage
 
 ```bash
 npx agent-md-caregiver                 # auto-discovers AGENTS.md, CLAUDE.md, codex.md (also nested ones)

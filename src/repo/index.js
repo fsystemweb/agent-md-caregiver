@@ -1,7 +1,8 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { isAbsolute, join, posix, relative, resolve } from 'node:path';
-import { gitFiles, gitRenames, isGitRepo } from './git.js';
-import { parseMakeTargets } from './makefile.js';
+import { gitFiles, gitRenames, gitStatus, isGitRepo } from './git.js';
+import { matchIgnore, parseGitignore } from './gitignore.js';
+import { isOpaqueMakefile, parseMakeTargets } from './makefile.js';
 import {
   LOCKFILES,
   matchWorkspaceDirs,
@@ -123,6 +124,99 @@ export class RepoContext {
     const abs = join(this.root, n);
     const rel = relative(this.root, abs);
     return !rel.startsWith('..') && !isAbsolute(rel) && existsSync(abs);
+  }
+
+  /**
+   * Is this path ignored by .gitignore (so it is legitimately absent from the tree, like
+   * `dist/` or `.env`)? Asks git when available, else applies .gitignore files itself.
+   * `node_modules` and `.git` always count as ignored.
+   * @param {string} p
+   * @returns {boolean}
+   */
+  isIgnored(p) {
+    const n = normalizeRepoPath(p);
+    if (!n) return false;
+    const slash = p.endsWith('/');
+    return this._memo(`ignored:${n}${slash ? '/' : ''}`, () => {
+      const segs = n.split('/');
+      if (segs.some((s) => s === 'node_modules' || s === '.git')) return true;
+      if (this.isGit) {
+        const r = gitStatus(this.root, ['check-ignore', '-q', '--', slash ? `${n}/` : n]);
+        if (r.status === 0) return true;
+        if (r.status === 1) return false;
+      }
+      return this._ignoredByFiles(segs, slash);
+    });
+  }
+
+  /**
+   * @param {string[]} segs
+   * @param {boolean} lastIsDir
+   * @returns {boolean}
+   */
+  _ignoredByFiles(segs, lastIsDir) {
+    for (let i = 1; i <= segs.length; i++) {
+      const sub = segs.slice(0, i).join('/');
+      const isDir = i < segs.length || lastIsDir || this._tree().dirs.has(sub) || isDirOnDisk(join(this.root, sub));
+      let ignored = false;
+      for (let j = 0; j < i; j++) {
+        const base = segs.slice(0, j).join('/');
+        const rules = this._gitignoreAt(base);
+        if (!rules.length) continue;
+        const m = matchIgnore(rules, segs.slice(j, i).join('/'), isDir);
+        if (m !== null) ignored = m;
+      }
+      if (ignored) return true;
+    }
+    return false;
+  }
+
+  /**
+   * @param {string} dir
+   * @returns {import('./gitignore.js').IgnoreRule[]}
+   */
+  _gitignoreAt(dir) {
+    return this._memo(`gitignore:${dir}`, () => {
+      const text = this._readText(dir ? `${dir}/.gitignore` : '.gitignore');
+      return text ? parseGitignore(text) : [];
+    });
+  }
+
+  /**
+   * Parsed package.json inside `dir` (relative to the root, '' = root), or null.
+   * @param {string} dir
+   * @returns {any | null}
+   */
+  packageJsonAt(dir) {
+    const n = dir === '' ? '' : normalizeRepoPath(dir);
+    if (n === null) return null;
+    return this._memo(`pkgAt:${n}`, () => this._readJson(n ? `${n}/package.json` : 'package.json'));
+  }
+
+  /**
+   * Scripts of the package.json inside `dir`, or null if there is none.
+   * @param {string} dir
+   * @returns {Record<string, string> | null}
+   */
+  scriptsAt(dir) {
+    const pkg = this.packageJsonAt(dir);
+    return pkg ? stringRecord(pkg.scripts) : null;
+  }
+
+  /**
+   * Makefile facts for `dir` (relative to the root, '' = root).
+   * @param {string} dir
+   * @returns {{ exists: boolean, targets: string[], opaque: boolean }}
+   */
+  makeAt(dir) {
+    const n = dir === '' ? '' : normalizeRepoPath(dir);
+    if (n === null) return { exists: false, targets: [], opaque: true };
+    return this._memo(`makeAt:${n}`, () => {
+      const name = MAKEFILES.find((f) => this._tree().fileSet.has(n ? `${n}/${f}` : f));
+      const text = name ? this._readText(n ? `${n}/${name}` : name) : null;
+      if (text === null) return { exists: false, targets: [], opaque: false };
+      return { exists: true, targets: parseMakeTargets(text), opaque: isOpaqueMakefile(text) };
+    });
   }
 
   /**
@@ -298,6 +392,15 @@ export class RepoContext {
     } catch {
       return null;
     }
+  }
+}
+
+/** @param {string} abs */
+function isDirOnDisk(abs) {
+  try {
+    return statSync(abs).isDirectory();
+  } catch {
+    return false;
   }
 }
 

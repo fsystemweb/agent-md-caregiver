@@ -18,8 +18,9 @@ after(() => cleanups.forEach((fn) => fn()));
 /** A repo with a clean file, empty files (the AMC000 stub fires on them), and files that must not be found. */
 const FILES = {
   'AGENTS.md': '# Project\n\nRun `npm test`.\n',
-  'CLAUDE.md': '\n',
+  'CLAUDE.md': '@AGENTS.md\n',
   'packages/a/AGENTS.md': '',
+  'packages/b/codex.md': '\n',
   'packages/a/README.md': '# not an instruction file\n',
   '.gitignore': 'ignored/\n',
   'ignored/AGENTS.md': '',
@@ -73,16 +74,16 @@ describe('help and version', () => {
 describe('discovery', () => {
   test('finds root and nested instruction files; skips ignored, node_modules and other files', () => {
     const { stdout } = cli(['--format', 'json']);
-    assert.deepEqual(JSON.parse(stdout).files, ['AGENTS.md', 'CLAUDE.md', 'packages/a/AGENTS.md']);
+    assert.deepEqual(JSON.parse(stdout).files, ['AGENTS.md', 'CLAUDE.md', 'packages/a/AGENTS.md', 'packages/b/codex.md']);
   });
 
   test('explicit file, directory and --root', () => {
     assert.deepEqual(JSON.parse(cli(['CLAUDE.md', '--format', 'json']).stdout).files, ['CLAUDE.md']);
-    assert.deepEqual(JSON.parse(cli(['packages', '--format', 'json']).stdout).files, ['packages/a/AGENTS.md']);
+    assert.deepEqual(JSON.parse(cli(['packages', '--format', 'json']).stdout).files, ['packages/a/AGENTS.md', 'packages/b/codex.md']);
     const r = makeRepo(FILES);
     cleanups.push(r.cleanup);
     const out = cli(['--root', r.root, '--format', 'json'], { files: {} });
-    assert.equal(JSON.parse(out.stdout).files.length, 3);
+    assert.equal(JSON.parse(out.stdout).files.length, 4);
   });
 
   test('paths are relative to the working directory', () => {
@@ -226,7 +227,7 @@ describe('reporters', () => {
     assert.deepEqual(Object.keys(report.findings[0]), [
       'ruleId', 'severity', 'message', 'file', 'line', 'col', 'evidence', 'suggestion',
     ]);
-    assert.deepEqual(report.summary, { files: 3, errors: 0, warnings: 0, infos: 2 });
+    assert.deepEqual(report.summary, { files: 4, errors: 0, warnings: 0, infos: 2 });
     assert.ok(!a.includes(process.cwd()), 'no absolute paths');
   });
 
@@ -235,15 +236,15 @@ describe('reporters', () => {
     assert.equal(
       stdout,
       [
-        'CLAUDE.md',
-        '  1:1     info   Instruction file is empty  AMC000',
-        '          fix: Add build and test commands, conventions and boundaries, or delete the file.',
-        '',
         'packages/a/AGENTS.md',
         '  1:1     info   Instruction file is empty  AMC000',
         '          fix: Add build and test commands, conventions and boundaries, or delete the file.',
         '',
-        '3 files checked: 0 error(s), 0 warning(s), 2 info.',
+        'packages/b/codex.md',
+        '  1:1     info   Instruction file is empty  AMC000',
+        '          fix: Add build and test commands, conventions and boundaries, or delete the file.',
+        '',
+        '4 files checked: 0 error(s), 0 warning(s), 2 info.',
         '',
       ].join('\n'),
     );

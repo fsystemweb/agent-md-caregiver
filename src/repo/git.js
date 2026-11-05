@@ -20,6 +20,22 @@ export function git(cwd, args) {
   return r.stdout;
 }
 
+/**
+ * Like `git`, but also reports the exit status (for commands where 1 means "no").
+ * @param {string} cwd
+ * @param {string[]} args
+ * @returns {{ status: number | null, stdout: string }}
+ */
+export function gitStatus(cwd, args) {
+  const r = spawnSync('git', ['-c', 'core.quotepath=false', ...args], {
+    cwd,
+    encoding: 'utf8',
+    timeout: 15000,
+    env: { ...process.env, GIT_OPTIONAL_LOCKS: '0', GIT_TERMINAL_PROMPT: '0' },
+  });
+  return { status: r.error ? null : r.status, stdout: r.stdout ?? '' };
+}
+
 /** @param {string} root */
 export function isGitRepo(root) {
   return git(root, ['rev-parse', '--is-inside-work-tree'])?.trim() === 'true';
