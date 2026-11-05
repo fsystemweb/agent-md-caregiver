@@ -1,0 +1,36 @@
+{
+  "name": "agent-md-caregiver",
+  "version": "0.0.0",
+  "description": "Checks AGENTS.md, CLAUDE.md and codex.md against the actual repo: dead commands, renamed paths, contradicting instructions.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "src",
+    "assets/logo.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "agents.md",
+    "claude.md",
+    "codex",
+    "ai-agents",
+    "linter",
+    "markdown",
+    "developer-tools"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OWNER/agent-md-caregiver.git"
+  },
+  "bugs": {
+    "url": "https://github.com/OWNER/agent-md-caregiver/issues"
+  },
+  "homepage": "https://github.com/OWNER/agent-md-caregiver#readme"
+}
