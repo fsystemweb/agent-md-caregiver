@@ -13,7 +13,7 @@
   <a href="LICENSE">MIT</a> · Node ≥ 20 · zero runtime dependencies · offline and deterministic
 </p>
 
-> **Status: pre-alpha.** The plan is in [PLAN.md](PLAN.md) and the tool lands PR by PR. All eleven rules and the CLI work today (`pretty` and `json` output). Still to come: the `github` and `sarif` formats and CI. The demo output is real; a recording follows in the release PR.
+> **Status: pre-alpha.** The plan is in [PLAN.md](PLAN.md) and the tool lands PR by PR. All eleven rules and the CLI work today (`pretty`, `json`, `github` and `sarif` output). Still to come: the release. The demo output is real; a recording follows in the release PR.
 
 ## Why
 
@@ -100,6 +100,18 @@ Suppress a false positive with `<!-- amc-ignore-next-line -->`. Tune severity wi
 ```
 
 Command-line options win over the file. An invalid file is an error (exit 2), never silently ignored.
+
+### In CI
+
+```yaml
+- run: npx agent-md-caregiver --strict --format github   # annotations on the PR
+# or upload to code scanning:
+- run: npx agent-md-caregiver --format sarif > amc.sarif || true
+- uses: github/codeql-action/upload-sarif@v3
+  with: { sarif_file: amc.sarif }
+```
+
+Use `actions/checkout` with `fetch-depth: 0` so rename suggestions can read git history. This repo runs the first form on itself.
 
 ### Using it from a coding agent
 
