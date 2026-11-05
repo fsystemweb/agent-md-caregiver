@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { after, describe, test } from 'node:test';
 import { createRepoContext, normalizeRepoPath } from '../src/repo/index.js';
 import { parseGitignore, matchIgnore } from '../src/repo/gitignore.js';
-import { parseMakeTargets } from '../src/repo/makefile.js';
+import { isOpaqueMakefile, parseMakeTargets } from '../src/repo/makefile.js';
 import { hasGit, makeRepo } from './helpers/make-repo.js';
 
 const cleanups = [];
@@ -178,6 +178,45 @@ for (const mode of MODES) {
       assert.deepEqual(ctx.makeTargets(), ['all', 'build', 'deploy', 'lint', 'test']);
     });
 
+    test('isIgnored: patterns, directories, non-existent paths, node_modules', () => {
+      const { ctx } = make(NODE_PROJECT);
+      for (const p of ['dist', 'dist/', 'dist/out.js', 'dist/not/there.js', 'debug.log', 'a/b/c.log', 'secret.txt', 'node_modules/x', '.git/config']) {
+        assert.equal(ctx.isIgnored(p), true, p);
+      }
+      for (const p of ['src', 'src/index.js', 'keep.log', 'sub/secret.txt', 'README.md', '', '../x', '/abs']) {
+        assert.equal(ctx.isIgnored(p), false, p);
+      }
+    });
+
+    test('isIgnored: nested .gitignore applies below its directory only', () => {
+      const { ctx } = make({
+        '.gitignore': '',
+        'pkg/.gitignore': 'build/\n*.tmp\n',
+        'pkg/src/a.js': '',
+      });
+      assert.equal(ctx.isIgnored('pkg/build/x.js'), true);
+      assert.equal(ctx.isIgnored('pkg/src/b.tmp'), true);
+      assert.equal(ctx.isIgnored('build/x.js'), false);
+      assert.equal(ctx.isIgnored('other/b.tmp'), false);
+    });
+
+    test('packageJsonAt / scriptsAt / makeAt for subdirectories', () => {
+      const { ctx } = make({
+        'package.json': '{"scripts":{"a":"x"}}',
+        'web/package.json': '{"scripts":{"b":"y"}}',
+        'web/Makefile': 'all:\n\techo\n',
+        'lib/Makefile': 'include x.mk\nall:\n\techo\n',
+      });
+      assert.deepEqual(ctx.scriptsAt(''), { a: 'x' });
+      assert.deepEqual(ctx.scriptsAt('web'), { b: 'y' });
+      assert.deepEqual(ctx.scriptsAt('web/'), { b: 'y' });
+      assert.equal(ctx.scriptsAt('lib'), null);
+      assert.equal(ctx.scriptsAt('../up'), null);
+      assert.deepEqual(ctx.makeAt('web'), { exists: true, targets: ['all'], opaque: false });
+      assert.deepEqual(ctx.makeAt('lib'), { exists: true, targets: ['all'], opaque: true });
+      assert.deepEqual(ctx.makeAt(''), { exists: false, targets: [], opaque: false });
+    });
+
     test('results are cached', () => {
       const { r, ctx } = make(NODE_PROJECT);
       assert.equal(ctx.files(), ctx.files());
@@ -312,6 +351,17 @@ describe('gitignore matcher', () => {
     assert.equal(ignored('[ab].txt', 'a.txt'), true);
     assert.equal(ignored('[!ab].txt', 'a.txt'), false);
     assert.equal(ignored('\\#hash', '#hash'), true);
+  });
+});
+
+describe('isOpaqueMakefile', () => {
+  test('include and catch-all rules make the target list untrustworthy', () => {
+    assert.equal(isOpaqueMakefile('include common.mk\n'), true);
+    assert.equal(isOpaqueMakefile('-include common.mk\n'), true);
+    assert.equal(isOpaqueMakefile('%:\n\t@echo\n'), true);
+    assert.equal(isOpaqueMakefile('.DEFAULT:\n\t@echo\n'), true);
+    assert.equal(isOpaqueMakefile('build:\n\techo include\n'), false);
+    assert.equal(isOpaqueMakefile('%.o: %.c\n'), false);
   });
 });
 

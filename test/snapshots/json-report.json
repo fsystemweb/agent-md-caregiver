@@ -7,19 +7,10 @@
   "files": [
     "AGENTS.md",
     "CLAUDE.md",
-    "packages/a/AGENTS.md"
+    "packages/a/AGENTS.md",
+    "packages/b/codex.md"
   ],
   "findings": [
-    {
-      "ruleId": "AMC000",
-      "severity": "info",
-      "message": "Instruction file is empty",
-      "file": "CLAUDE.md",
-      "line": 1,
-      "col": 1,
-      "evidence": "",
-      "suggestion": "Add build and test commands, conventions and boundaries, or delete the file."
-    },
     {
       "ruleId": "AMC000",
       "severity": "info",
@@ -29,10 +20,20 @@
       "col": 1,
       "evidence": "",
       "suggestion": "Add build and test commands, conventions and boundaries, or delete the file."
+    },
+    {
+      "ruleId": "AMC000",
+      "severity": "info",
+      "message": "Instruction file is empty",
+      "file": "packages/b/codex.md",
+      "line": 1,
+      "col": 1,
+      "evidence": "",
+      "suggestion": "Add build and test commands, conventions and boundaries, or delete the file."
     }
   ],
   "summary": {
-    "files": 3,
+    "files": 4,
     "errors": 0,
     "warnings": 0,
     "infos": 2

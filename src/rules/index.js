@@ -1,4 +1,7 @@
 import { emptyFile } from './amc000-empty-file.js';
+import { commandNotFound } from './amc001-command-not-found.js';
+import { pathMissing } from './amc002-path-missing.js';
+import { brokenImport } from './amc005-broken-import.js';
 
 /**
  * @typedef {'info' | 'warn' | 'error'} Severity
@@ -27,7 +30,7 @@ import { emptyFile } from './amc000-empty-file.js';
  */
 
 /** @type {Rule[]} All rules, in id order. */
-export const RULES = [emptyFile];
+export const RULES = [emptyFile, commandNotFound, pathMissing, brokenImport];
 
 /**
  * @param {string} id  Case-insensitive.
