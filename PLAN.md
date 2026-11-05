@@ -142,7 +142,7 @@ I will open PR 0 first and wait. Each later PR is a separate branch off `main` s
 
 1. **Name on npm**: is `agent-md-caregiver` free to publish under your account/org?
 2. **Language**: OK with Node/JS (zero-dep) rather than TypeScript-with-build or Python?
-3. **GitHub owner** for the repo URLs in README/package.json (placeholder `OWNER` for now).
+3. **GitHub owner** for the repo URLs in README/package.json (placeholder `fsystemweb` for now).
 4. **Logo**: I'll draw a simple SVG nurse with a clipboard-style `.md` file. Want it playful or minimal?
 
-Defaults if you don't answer: Node/JS, placeholder `OWNER`, playful-minimal logo.
+Defaults if you don't answer: Node/JS, placeholder `fsystemweb`, playful-minimal logo.

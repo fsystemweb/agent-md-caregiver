@@ -27,10 +27,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OWNER/agent-md-caregiver.git"
+    "url": "git+https://github.com/fsystemweb/agent-md-caregiver.git"
   },
   "bugs": {
-    "url": "https://github.com/OWNER/agent-md-caregiver/issues"
+    "url": "https://github.com/fsystemweb/agent-md-caregiver/issues"
   },
-  "homepage": "https://github.com/OWNER/agent-md-caregiver#readme"
+  "homepage": "https://github.com/fsystemweb/agent-md-caregiver#readme"
 }

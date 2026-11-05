@@ -9,7 +9,7 @@ Use a template: **Bug report**, **New rule proposal**, or **Feature request**. F
 ## 2. Fork, branch, code
 
 ```bash
-git clone https://github.com/OWNER/agent-md-caregiver.git
+git clone https://github.com/fsystemweb/agent-md-caregiver.git
 cd agent-md-caregiver
 git checkout -b feat/short-description
 npm test
