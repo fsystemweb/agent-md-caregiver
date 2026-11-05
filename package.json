@@ -1,6 +1,6 @@
 {
   "name": "agent-md-caregiver",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Checks AGENTS.md, CLAUDE.md and codex.md against the actual repo: dead commands, renamed paths, contradicting instructions.",
   "type": "module",
   "bin": {
@@ -15,6 +15,7 @@
     "src",
     "assets/logo.svg",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "scripts": {

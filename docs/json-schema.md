@@ -9,7 +9,7 @@ The output is deterministic. It contains no timestamps and no absolute paths, so
 ```json
 {
   "schemaVersion": 1,
-  "tool": { "name": "agent-md-caregiver", "version": "0.0.0" },
+  "tool": { "name": "agent-md-caregiver", "version": "0.1.0" },
   "files": ["AGENTS.md", "packages/a/AGENTS.md"],
   "findings": [
     {
