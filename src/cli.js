@@ -7,7 +7,7 @@ import { loadConfig } from './config.js';
 import { discover, resolveTargets } from './discover.js';
 import { INIT_TEMPLATE } from './init-template.js';
 import { exitCodeFor, lint } from './lint.js';
-import { formatJson, formatPretty, IMPLEMENTED_FORMATS } from './report/index.js';
+import { formatGithub, formatJson, formatPretty, formatSarif } from './report/index.js';
 import { createRepoContext } from './repo/index.js';
 import { findRule } from './rules/index.js';
 
@@ -80,10 +80,6 @@ function runInner(argv, io) {
     return 0;
   }
 
-  if (!IMPLEMENTED_FORMATS.includes(opts.format)) {
-    throw new UsageError(`--format ${opts.format} is not available yet (use pretty or json)`);
-  }
-
   const repo = createRepoContext(root);
   const files = opts.paths.length ? resolveTargets(repo, opts.paths, io.cwd) : discover(repo);
   const config = loadConfig(root);
@@ -94,6 +90,10 @@ function runInner(argv, io) {
 
   if (opts.format === 'json') {
     io.stdout.write(formatJson(result, { version: pkg.version }));
+  } else if (opts.format === 'sarif') {
+    io.stdout.write(formatSarif(result, { version: pkg.version }));
+  } else if (opts.format === 'github') {
+    io.stdout.write(formatGithub(result));
   } else {
     const color = Boolean(io.isTTY) && !opts.noColor && !('NO_COLOR' in io.env);
     io.stdout.write(formatPretty(result, { color }));

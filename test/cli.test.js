@@ -133,8 +133,6 @@ describe('exit codes and rule levels', () => {
     const cases = [
       [['--bogus'], /Unknown option/],
       [['--format', 'xml'], /--format must be one of/],
-      [['--format', 'github'], /not available yet/],
-      [['--format', 'sarif'], /not available yet/],
       [['--max-lines', '0'], /positive integer/],
       [['--max-lines', 'abc'], /positive integer/],
       [['--rule', 'AMC000'], /--rule expects/],
