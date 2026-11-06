@@ -1,6 +1,6 @@
 # AGENTS.md
 
-`agent-md-caregiver` is a zero-dependency Node CLI that checks AGENTS.md, CLAUDE.md and codex.md against the real repo. Roadmap and design: `PLAN.md`.
+`agent-md-caregiver` is a zero-dependency Node CLI that checks AGENTS.md, CLAUDE.md and codex.md against the real repo.
 
 ## Commands
 - Test: `npm test`

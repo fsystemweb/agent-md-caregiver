@@ -1,7 +1,7 @@
 # Project
 
 Run `npm test` before commit.
-See [the plan](PLAN.md) and `src/parse/index.js`.
+See `src/parse/index.js`.
 @docs/guide.md
 
 ## Commands

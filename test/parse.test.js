@@ -14,7 +14,6 @@ test('basic fixture: exact kinds, text, line and column', () => {
   const { claims } = parse(fixture('basic.md'), { file: 'basic.md' });
   assert.deepEqual(brief(claims), [
     ['command', 'npm test', 3, 6],
-    ['path', 'PLAN.md', 4, 16],
     ['path', 'src/parse/index.js', 4, 30],
     ['path', 'docs/guide.md', 5, 2],
     ['command', 'npm install', 10, 3],
@@ -182,7 +181,6 @@ test("the repo's own AGENTS.md yields exactly the claims it actually makes", () 
   assert.deepEqual(
     claims.map((c) => [c.kind, c.text]),
     [
-      ['path', 'PLAN.md'],
       ['command', 'npm test'],
       ['command', 'node src/cli.js --help'],
       ['path', 'CONTRIBUTING.md'],

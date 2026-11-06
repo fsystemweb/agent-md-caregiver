@@ -37,8 +37,6 @@ Everyone writing agent instruction files has stale ones. A script gets renamed, 
 | `AMC010` legacy-filename | `codex.md`, or `CLAUDE.md` and `AGENTS.md` that have drifted apart |
 | `AMC011` duplicate-instruction | The same instruction twice |
 
-Details and severities are in [PLAN.md](PLAN.md#33-rules-srcrules-one-file-per-rule-one-test-file-per-rule).
-
 ## Demo
 
 Given this `AGENTS.md`:
