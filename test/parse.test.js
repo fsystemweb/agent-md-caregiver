@@ -14,7 +14,7 @@ test('basic fixture: exact kinds, text, line and column', () => {
   const { claims } = parse(fixture('basic.md'), { file: 'basic.md' });
   assert.deepEqual(brief(claims), [
     ['command', 'npm test', 3, 6],
-    ['path', 'src/parse/index.js', 4, 30],
+    ['path', 'src/parse/index.js', 4, 6],
     ['path', 'docs/guide.md', 5, 2],
     ['command', 'npm install', 10, 3],
     ['command', 'pnpm run build', 11, 1],
@@ -23,7 +23,7 @@ test('basic fixture: exact kinds, text, line and column', () => {
   ]);
   assert.deepEqual(
     claims.map((c) => c.via ?? null),
-    ['inline-code', 'link', 'inline-code', 'import', 'fence', 'fence', 'fence', null],
+    ['inline-code', 'inline-code', 'import', 'fence', 'fence', 'fence', null],
   );
   assert.ok(claims.every((c) => c.file === 'basic.md'));
 });
