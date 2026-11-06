@@ -13,7 +13,7 @@
   <a href="LICENSE">MIT</a> · Node ≥ 20 · zero runtime dependencies · offline and deterministic
 </p>
 
-> **Status: pre-alpha.** The plan is in [PLAN.md](PLAN.md) and the tool lands PR by PR. All eleven rules and the CLI work today (`pretty`, `json`, `github` and `sarif` output). Still to come: the release. The demo output is real; a recording follows in the release PR.
+> **Status: v0.1.0, not yet on npm.** All eleven rules and the CLI work (`pretty`, `json`, `github` and `sarif` output); see the [changelog](CHANGELOG.md). The demo below is real output, checked by a test on every run. Until the first publish, run it from a clone: `node src/cli.js`.
 
 ## Why
 
