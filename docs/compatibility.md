@@ -1,3 +1,7 @@
+---
+title: Compatibility
+---
+
 # Compatibility
 
 `agent-md-caregiver` is JavaScript-first. This page says what to expect on other stacks.

@@ -13,6 +13,8 @@
   <a href="LICENSE">MIT</a> · Node ≥ 20 · zero runtime dependencies · offline and deterministic
 </p>
 
+**Documentation: [fsystemweb.github.io/agent-md-caregiver](https://fsystemweb.github.io/agent-md-caregiver/)**
+
 > **Status: v0.1.0, not yet on npm.** All eleven rules and the CLI work (`pretty`, `json`, `github` and `sarif` output); see the [changelog](CHANGELOG.md). The demo below is real output, checked by a test on every run. Until the first publish, run it from a clone: `node src/cli.js`.
 
 ## Why

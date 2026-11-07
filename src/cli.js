@@ -2,7 +2,7 @@
 import { existsSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DEFAULT_MAX_LINES, HELP, parseCli, UsageError } from './args.js';
+import { DEFAULT_MAX_LINES, DOCS_URL, HELP, parseCli, UsageError } from './args.js';
 import { loadConfig } from './config.js';
 import { discover, resolveTargets } from './discover.js';
 import { INIT_TEMPLATE } from './init-template.js';
@@ -52,6 +52,10 @@ function runInner(argv, io) {
 
   if (opts.help) {
     io.stdout.write(HELP);
+    return 0;
+  }
+  if (opts.docs) {
+    io.stdout.write(`${DOCS_URL}\n`);
     return 0;
   }
   if (opts.version) {
