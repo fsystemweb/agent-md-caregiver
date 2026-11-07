@@ -11,7 +11,8 @@ const PACKAGE_SPECIFIER = /^(?:@[\w.-]+\/)?[\w.-]+@[\w.^~<>=*-]+(?:\/|$)/;
 
 /**
  * Is a path written relative to some subfolder ("main.tsx" for "src/main.tsx")? True when an
- * existing file or directory ends with the written path. Humans read these fine, so we stay silent.
+ * existing file or directory ends with the written path (ignored files that exist on disk count,
+ * and so does a module specifier without its extension). Humans read these fine, so we stay silent.
  * @param {import('../repo/index.js').RepoContext} repo
  * @param {string} written
  * @returns {boolean}
@@ -20,7 +21,13 @@ function existsBelow(repo, written) {
   const tail = written.replace(/^(?:\.\/)+/, '').replace(/\/+$/, '');
   if (!tail || tail.startsWith('../') || tail === '..') return false;
   const suffix = '/' + tail;
-  return repo.files().some((f) => f.endsWith(suffix)) || repo.dirs().some((d) => d.endsWith(suffix));
+  if (repo.files().some((f) => f.endsWith(suffix)) || repo.dirs().some((d) => d.endsWith(suffix))) return true;
+  // `./state` for `src/state.ts` or `src/state/index.ts`: a module specifier without its extension.
+  if (!/\.[A-Za-z0-9]+$/.test(posix.basename(tail))) {
+    if (repo.files().some((f) => f.replace(/\.[A-Za-z0-9]+$/, '').endsWith(suffix))) return true;
+  }
+  // Git-ignored but present on disk under some tracked directory (`backend/appsettings.json`).
+  return repo.dirs().some((d) => repo.existsOnDisk(`${d}/${tail}`));
 }
 
 const NODE_VALUE_FLAGS = new Set(['-r', '--require', '--import', '--loader', '--env-file', '--experimental-loader']);
