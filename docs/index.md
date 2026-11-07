@@ -47,6 +47,7 @@ The exit code is `1`, so it works in CI.
 - [Compatibility](compatibility.md): languages and package managers
 - [Agent review](agent-review.md): optional LLM judgment that runs inside your coding agent
 - Schemas: [JSON report](json-schema.md), [review handoff](handoff-schema.md)
+- [Security audit report](security/REPORT.md)
 - [Contributing and changelog](contributing.md)
 
 Source and issues: [github.com/fsystemweb/agent-md-caregiver](https://github.com/fsystemweb/agent-md-caregiver). MIT.
