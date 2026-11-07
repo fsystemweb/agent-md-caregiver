@@ -1,5 +1,5 @@
 import { parse } from '../parse/index.js';
-import { readTextInside } from '../repo/safe-read.js';
+import { clampLines, readTextInside } from '../repo/safe-read.js';
 import { makeRef, scriptRef } from '../rules/lib/commands.js';
 import { tokenize } from '../rules/lib/tokenize.js';
 
@@ -193,8 +193,9 @@ export function buildHandoff(repo, result, tool) {
   /** @type {ReviewItem[]} */
   const items = [];
   for (const file of result.files) {
-    const text = readTextInside(repo.root, file);
-    if (text === null) continue;
+    const raw = readTextInside(repo.root, file);
+    if (raw === null) continue;
+    const text = clampLines(raw);
     for (const item of itemsForFile(file, text, result.findings)) items.push({ id: '', ...item });
   }
   items.sort((a, b) => (a.file < b.file ? -1 : a.file > b.file ? 1 : a.line - b.line || a.col - b.col || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0)));

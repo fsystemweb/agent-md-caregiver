@@ -111,12 +111,15 @@ export function parseToml(text) {
 
     if (/^("""|''')/.test(value)) {
       const delim = value.slice(0, 3);
-      let body = value.slice(3);
-      while (!body.includes(delim)) {
+      // The delimiter has no line break in it, so only the line just added can close the string.
+      const parts = [value.slice(3)];
+      let closed = parts[0].includes(delim);
+      while (!closed) {
         if (++i >= lines.length) return null;
-        body += `\n${lines[i]}`;
+        parts.push(lines[i]);
+        closed = lines[i].includes(delim);
       }
-      value = `${delim}${body}`;
+      value = `${delim}${parts.join('\n')}`;
     } else {
       let depth = depthDelta(value);
       while (depth > 0) {
