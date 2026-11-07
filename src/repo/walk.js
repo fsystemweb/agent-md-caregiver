@@ -1,4 +1,5 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { readdirSync } from 'node:fs';
+import { readTextInside } from './safe-read.js';
 import { join } from 'node:path';
 import { matchIgnore, parseGitignore } from './gitignore.js';
 
@@ -27,8 +28,8 @@ export function walkFiles(root) {
     const hasIgnore = entries.some((e) => e.name === '.gitignore' && !e.isDirectory());
     if (hasIgnore) {
       try {
-        const text = readFileSync(join(root, rel, '.gitignore'), 'utf8');
-        scopes.push({ base: rel, rules: parseGitignore(text) });
+        const text = readTextInside(root, rel ? `${rel}/.gitignore` : '.gitignore');
+        if (text !== null) scopes.push({ base: rel, rules: parseGitignore(text) });
       } catch {
         // unreadable .gitignore: treat as absent
       }

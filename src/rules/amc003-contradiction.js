@@ -1,6 +1,6 @@
-import { readFileSync } from 'node:fs';
 import { join, posix } from 'node:path';
 import { parse } from '../parse/index.js';
+import { readTextInside } from '../repo/safe-read.js';
 import {
   commandAssertions,
   indentAssertions,
@@ -137,12 +137,8 @@ export const contradiction = {
 
     // 3. Against the files that outrank this one.
     for (const otherFile of outranking(repo, file)) {
-      let otherText;
-      try {
-        otherText = readFileSync(join(repo.root, otherFile), 'utf8');
-      } catch {
-        continue;
-      }
+      const otherText = readTextInside(repo.root, otherFile);
+      if (otherText === null) continue;
       const other = parse(otherText, { file: otherFile });
       const nested = dirOf(otherFile) !== dir;
       for (const cat of CATEGORIES) {

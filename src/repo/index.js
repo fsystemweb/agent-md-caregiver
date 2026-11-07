@@ -1,5 +1,5 @@
-import { existsSync, readFileSync, statSync } from 'node:fs';
-import { isAbsolute, join, posix, relative, resolve } from 'node:path';
+import { statSync } from 'node:fs';
+import { join, posix, resolve } from 'node:path';
 import { gitFiles, gitRenames, gitStatus, isGitRepo } from './git.js';
 import { matchIgnore, parseGitignore } from './gitignore.js';
 import { isOpaqueMakefile, parseMakeTargets } from './makefile.js';
@@ -10,6 +10,7 @@ import {
   workspacePatterns,
 } from './package.js';
 import { parsePyproject, REQUIREMENTS_FILE } from './python.js';
+import { realInside, readTextInside } from './safe-read.js';
 import { walkFiles } from './walk.js';
 
 /**
@@ -122,9 +123,7 @@ export class RepoContext {
   existsOnDisk(p) {
     const n = normalizeRepoPath(p);
     if (n === null) return false;
-    const abs = join(this.root, n);
-    const rel = relative(this.root, abs);
-    return !rel.startsWith('..') && !isAbsolute(rel) && existsSync(abs);
+    return realInside(this.root, n) !== null;
   }
 
   /**
@@ -433,11 +432,7 @@ export class RepoContext {
    * @returns {string | null}
    */
   _readText(rel) {
-    try {
-      return readFileSync(join(this.root, rel), 'utf8');
-    } catch {
-      return null;
-    }
+    return readTextInside(this.root, rel);
   }
 }
 

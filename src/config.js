@@ -1,4 +1,5 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
+import { readTextInside } from './repo/safe-read.js';
 import { join } from 'node:path';
 import { UsageError } from './args.js';
 import { findRule } from './rules/index.js';
@@ -29,9 +30,11 @@ export function loadConfig(root) {
   const path = join(root, CONFIG_FILE);
   if (!existsSync(path)) return { rules: {} };
   const bad = (msg) => new UsageError(`${CONFIG_FILE}: ${msg}`);
+  const raw = readTextInside(root, CONFIG_FILE);
+  if (raw === null) throw bad('cannot be read, or is a symlink that leaves the repo root (such links are not followed)');
   let data;
   try {
-    data = JSON.parse(readFileSync(path, 'utf8'));
+    data = JSON.parse(raw);
   } catch (e) {
     throw bad(`not valid JSON (${/** @type {Error} */ (e).message})`);
   }

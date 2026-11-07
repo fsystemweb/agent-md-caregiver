@@ -1,6 +1,5 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { parse } from '../parse/index.js';
+import { readTextInside } from '../repo/safe-read.js';
 import { makeRef, scriptRef } from '../rules/lib/commands.js';
 import { tokenize } from '../rules/lib/tokenize.js';
 
@@ -194,7 +193,8 @@ export function buildHandoff(repo, result, tool) {
   /** @type {ReviewItem[]} */
   const items = [];
   for (const file of result.files) {
-    const text = readFileSync(join(repo.root, file), 'utf8');
+    const text = readTextInside(repo.root, file);
+    if (text === null) continue;
     for (const item of itemsForFile(file, text, result.findings)) items.push({ id: '', ...item });
   }
   items.sort((a, b) => (a.file < b.file ? -1 : a.file > b.file ? 1 : a.line - b.line || a.col - b.col || (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0)));
