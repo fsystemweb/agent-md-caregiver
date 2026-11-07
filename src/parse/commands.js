@@ -1,7 +1,7 @@
 import { posix } from 'node:path';
 import { hasPlaceholder, makeClaim } from './util.js';
 
-const TOOL = /^(npm|pnpm|yarn|bun|bunx|npx|pnpx|make|node|python3?|pytest)(?:\s+(.+))?$/;
+const TOOL = /^(npm|pnpm|yarn|bun|bunx|npx|pnpx|make|node|python3?|pytest|pip3?|uv|poetry|pipenv|pdm|poe)(?:\s+(.+))?$/;
 /** Tools that are a complete command with no arguments (`make`, `pytest`, `yarn` = install). */
 const BARE_OK = new Set(['make', 'pytest', 'yarn']);
 /** `node 20`, `python 3.12`: a version mention, not a command. */

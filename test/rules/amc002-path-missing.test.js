@@ -156,3 +156,25 @@ describe('AMC002 stays silent', () => {
     silent('```sh\ncd ..\nnode nope.js\n```');
   });
 });
+
+describe('AMC002 Python layouts (#14)', () => {
+  const files = {
+    'pyproject.toml': '[project]\nname="a"\n',
+    'src/app/__init__.py': '',
+    'src/app/models.py': '',
+    'src/app/api/routes.py': '',
+    'tests/test_models.py': '',
+  };
+  test('src/ layout: package paths written without src/ stay silent', () => {
+    assert.deepEqual(run('Models are in `app/models.py`, routes in `app/api/routes.py`, package `app/`.', files), []);
+  });
+
+  test('__init__.py and file arguments of python and pytest', () => {
+    assert.deepEqual(run('`src/app/__init__.py`\n\n```sh\npytest tests/test_models.py::test_x\npython -m app.cli\n```\n', files), []);
+  });
+
+  test('still fires for a module that does not exist', () => {
+    assert.equal(run('`app/missing.py`', files)[0].message, '`app/missing.py` does not exist');
+    assert.equal(run('```sh\npytest tests/test_nope.py\n```', files).length, 1);
+  });
+});

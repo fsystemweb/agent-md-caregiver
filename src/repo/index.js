@@ -9,6 +9,7 @@ import {
   parsePackageManager,
   workspacePatterns,
 } from './package.js';
+import { parsePyproject, REQUIREMENTS_FILE } from './python.js';
 import { walkFiles } from './walk.js';
 
 /**
@@ -297,6 +298,51 @@ export class RepoContext {
         };
       });
     });
+  }
+
+  /**
+   * Parsed pyproject.toml at `dir` ('' = root), or null when absent or not understood.
+   * @param {string} dir
+   * @returns {import('./python.js').PyProject | null}
+   */
+  pyprojectAt(dir) {
+    return this._memo(`pyproject:${dir}`, () => {
+      const rel = dir ? `${dir}/pyproject.toml` : 'pyproject.toml';
+      if (!this._tree().fileSet.has(rel)) return null;
+      const text = this._readText(rel);
+      return text === null ? null : parsePyproject(text);
+    });
+  }
+
+  /**
+   * Is there a pyproject.toml at `dir` at all (even one the reader could not parse)?
+   * @param {string} dir
+   * @returns {boolean}
+   */
+  hasPyprojectAt(dir) {
+    return this._tree().fileSet.has(dir ? `${dir}/pyproject.toml` : 'pyproject.toml');
+  }
+
+  /**
+   * Requirements files (`requirements*.txt`, `*.in`) directly in `dir`.
+   * @param {string} dir
+   * @returns {string[]}  Repo-relative paths.
+   */
+  requirementFilesAt(dir) {
+    return this._memo(`reqs:${dir}`, () =>
+      this.files().filter(
+        (f) => posix.dirname(f) === (dir || '.') && REQUIREMENTS_FILE.test(posix.basename(f)),
+      ),
+    );
+  }
+
+  /**
+   * Text of a tracked file, or null. Never leaves the tree.
+   * @param {string} rel
+   * @returns {string | null}
+   */
+  textAt(rel) {
+    return this._tree().fileSet.has(rel) ? this._readText(rel) : null;
   }
 
   /**

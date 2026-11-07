@@ -4,7 +4,7 @@ const VERB = /\b(always|never|must not|must|do not|don't|prefer|use)\b/i;
 
 /** Only subjects we can later verify or compare. Anything else is not a directive claim. */
 const SUBJECTS = /** @type {[string, RegExp][]} */ ([
-  ['package-manager', /\b(?:npm|pnpm|yarn|bun)\b/i],
+  ['package-manager', /\b(?:npm|pnpm|yarn|bun|pip3?|uv|poetry|pipenv|pdm)\b/i],
   ['indentation', /\b(?:tabs?|spaces?|indent(?:ation|ed)?)\b/i],
   ['test-runner', /\b(?:jest|vitest|mocha|pytest|ava|jasmine|node:test|node --test)\b/i],
   ['language-version', /\b(?:node(?:\.js)?|python|typescript|java|go|rust|ruby)\s*v?\d+(?:\.\d+)*\+?/i],

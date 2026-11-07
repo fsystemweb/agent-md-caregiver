@@ -27,7 +27,7 @@ Everyone writing agent instruction files has stale ones. A script gets renamed, 
 |---|---|
 | `AMC001` command-not-found | `npm run lint:fix` when no `lint:fix` script exists; `make deploy` with no target |
 | `AMC002` path-missing | `src/utils/helpers.ts` was renamed or deleted. Suggests the new path from git history |
-| `AMC003` contradiction | "Use pnpm" in one place, `npm install` in another; tabs vs spaces; "never X" vs "run X" |
+| `AMC003` contradiction | "Use pnpm" in one place, `npm install` in another (same for "use uv" and `pip install x`); tabs vs spaces; "never X" vs "run X" |
 | `AMC004` package-manager-mismatch | File says `npm`, lockfile says `pnpm` |
 | `AMC005` broken-import | `@AGENTS.md` or a relative link that points nowhere |
 | `AMC006` vague-instruction | "Run the tests" with no command |
@@ -44,9 +44,11 @@ JavaScript and TypeScript repos get every rule. Other stacks get the language-ag
 | Ecosystem | Level | What works |
 |---|---|---|
 | npm, pnpm, yarn, bun | Full | all rules |
+| pip, uv (Python) | Full | package manager (`AMC003`, `AMC004`), Poe tasks, console scripts and pytest (`AMC001`), `src/` layouts (`AMC002`) |
+| poetry, pipenv, pdm | Partial | detected for mismatch and contradiction checks |
 | Any language with a Makefile | Partial | `make` targets (`AMC001`) |
-| Python, Go, Rust, Java, others | Partial | paths (`AMC002`), links and imports (`AMC005`), hygiene (`AMC006`-`AMC011`), tabs vs spaces (`AMC003`) |
-| pip, poetry, uv, cargo, go, maven... | None | not detected: the tool stays quiet instead of guessing |
+| Go, Rust, Java, others | Partial | paths (`AMC002`), links and imports (`AMC005`), hygiene (`AMC006`-`AMC011`), tabs vs spaces (`AMC003`) |
+| cargo, go, maven... | None | not detected: the tool stays quiet instead of guessing |
 
 Needs Node 20 or newer; `git` is optional (used for rename suggestions). Per-rule table and details: [docs/compatibility.md](docs/compatibility.md).
 

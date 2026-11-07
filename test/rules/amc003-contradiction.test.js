@@ -174,3 +174,36 @@ describe('AMC003 stays silent', () => {
     assert.deepEqual(check('AMC003', { 'AGENTS.md': same, 'CLAUDE.md': same }, { target: 'CLAUDE.md' }), []);
   });
 });
+
+describe('AMC003 Python package manager (#14)', () => {
+  test('"use uv" vs a pip install, within the file', () => {
+    const [f] = run('Use uv for everything.\n\n```sh\npip install requests\n```\n');
+    assert.equal(f.line, 4);
+    assert.equal(f.message, 'Contradicts line 1: that says Python package manager uv, this says pip');
+    assert.match(f.suggestion, /Pick one Python package manager/);
+  });
+
+  test('"use pip" vs "use uv", with the real manager named', () => {
+    const files = { 'uv.lock': '', 'pyproject.toml': '[tool.uv]\n' };
+    const out = run('Use pip.\n\nUse uv.\n', files);
+    assert.equal(out.length, 1);
+    assert.equal(out[0].suggestion, 'The repo uses uv (uv.lock); change the lines that say otherwise.');
+  });
+
+  test('across files: CLAUDE.md against AGENTS.md', () => {
+    const out = check('AMC003', { 'AGENTS.md': 'Use uv.\n', 'CLAUDE.md': 'Use pip.\n' }, { target: 'CLAUDE.md' });
+    assert.equal(out.length, 1);
+    assert.match(out[0].message, /Contradicts AGENTS\.md line 1: that says Python package manager uv, this says pip/);
+  });
+
+  test('a nested package with its own lockfile may differ', () => {
+    const files = { 'AGENTS.md': 'Use uv.\n', 'svc/AGENTS.md': 'Use poetry.\n', 'svc/poetry.lock': '' };
+    assert.deepEqual(check('AMC003', files, { target: 'svc/AGENTS.md' }), []);
+  });
+
+  test('stays silent: commands valid anywhere, one manager per ecosystem, scoped lines', () => {
+    assert.deepEqual(run('Use uv.\n\n```sh\npip install -r requirements.txt\nuv pip install x\npython -m venv .venv\n```\n'), []);
+    assert.deepEqual(run('Use pnpm for the web app.\n\nUse uv for the API.\n'), []);
+    assert.deepEqual(run('## Using pip\n\nUse uv.\n\n- `pip install x`\n'), []);
+  });
+});

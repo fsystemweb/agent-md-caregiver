@@ -1,6 +1,7 @@
 import { posix } from 'node:path';
 import { CONVENTIONAL_SCRIPTS, makeRef, RUN_PREFIX, scriptRef } from './lib/commands.js';
 import { isHedged } from './lib/context.js';
+import { pyScriptRef, pytestDeclared, runsPytest } from './lib/python.js';
 import { closestName } from './lib/suggest.js';
 
 /** @typedef {import('./index.js').RuleFinding} RuleFinding */
@@ -61,6 +62,9 @@ export const commandNotFound = {
     '  - `npm run x`, `npm test`, `pnpm run x`, `yarn x`, `bun run x` where package.json has no such script',
     '  - `make x` where the Makefile has no such target',
     '  - a workspace (`npm -w x`, `pnpm --filter x`, `yarn workspace x`) that does not exist',
+    '  - `poe x` (or `uv run poe x`) where [tool.poe.tasks] has no task x',
+    '  - `uv run x` / `poetry run x` where x is one typo away from a console script in pyproject.toml',
+    '  - `pytest` in a Python repo that never mentions pytest (no dependency, config or conftest.py)',
     '',
     'Agents follow these lines, so a dead command wastes a turn and often derails the task.',
     'The finding suggests the closest existing script or target, or lists what is available.',
@@ -96,6 +100,12 @@ export const commandNotFound = {
       if (ref) {
         const f = checkScript(repo, ref, base, claim.dir !== undefined);
         if (f) findings.push({ ...at, ...f(claim.text) });
+        continue;
+      }
+
+      const py = checkPython(repo, claim.text, base);
+      if (py) {
+        findings.push({ ...at, ...py });
         continue;
       }
 
@@ -191,4 +201,66 @@ function confident(ref, names) {
     CONVENTIONAL_SCRIPTS.has(ref.script) ||
     closestName(ref.script, names, { strict: true }) !== null
   );
+}
+
+/**
+ * Python commands: Poe tasks, console scripts one typo away, pytest that nothing declares.
+ * @param {import('../repo/index.js').RepoContext} repo
+ * @param {string} text
+ * @param {string} base  Directory the command runs in, relative to the root.
+ * @returns {{ message: string, suggestion: string } | null}
+ */
+function checkPython(repo, text, base) {
+  const ref = pyScriptRef(text);
+  const viaScript = ref ? checkPyScript(repo, text, base, ref) : null;
+  if (viaScript) return viaScript;
+
+  if (runsPytest(text)) {
+    const found = pytestDeclared(repo, base);
+    if (!found || found.declared) return null;
+    return {
+      message: `\`${text}\`: nothing in this repo mentions pytest (no dependency, config or conftest.py)`,
+      suggestion: 'Add pytest to the dev dependencies, or use the test command the repo really uses.',
+    };
+  }
+  return null;
+}
+
+/**
+ * @param {import('../repo/index.js').RepoContext} repo
+ * @param {string} text
+ * @param {string} base
+ * @param {NonNullable<ReturnType<typeof pyScriptRef>>} ref
+ * @returns {{ message: string, suggestion: string } | null}
+ */
+function checkPyScript(repo, text, base, ref) {
+  const sources = [];
+  for (let d = base; ; d = posix.dirname(d)) {
+    const pp = repo.pyprojectAt(d === '.' ? '' : d);
+    if (pp) sources.push(pp);
+    if (d === '.' || d === '' || d === '/') break;
+  }
+  if (sources.length === 0) return null;
+  if (ref.kind === 'poe') {
+    if (repo.files().some((f) => /(^|\/)poe_tasks\./.test(f))) return null; // tasks live in another file
+    const configured = sources.filter((s) => s.poeTasks !== null);
+    if (configured.length === 0) return null;
+    const tasks = [...new Set(configured.flatMap((s) => s.poeTasks ?? []))].sort();
+    if (tasks.includes(ref.name)) return null;
+    const close = closestName(ref.name, tasks);
+    return {
+      message: `\`${text}\`: no Poe task "${ref.name}" in pyproject.toml`,
+      suggestion: close
+        ? `Did you mean \`${ref.launcher} ${close}\`?`
+        : `Add a "${ref.name}" task under [tool.poe.tasks] or remove this command. Available tasks: ${list(tasks)}.`,
+    };
+  }
+  const scripts = [...new Set(sources.flatMap((s) => s.scripts))].sort();
+  if (scripts.includes(ref.name)) return null;
+  const close = closestName(ref.name, scripts, { strict: true });
+  if (!close) return null; // could be any installed tool
+  return {
+    message: `\`${text}\`: no console script "${ref.name}" in pyproject.toml`,
+    suggestion: `Did you mean \`${ref.launcher} ${close}\`?`,
+  };
 }
