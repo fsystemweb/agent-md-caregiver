@@ -1,4 +1,4 @@
-import { globToRegexSource } from './glob.js';
+import { compileGlob } from './glob.js';
 
 /** Lockfile name → package manager. */
 export const LOCKFILES = /** @type {const} */ ([
@@ -69,7 +69,7 @@ function pnpmPackages(yaml) {
  */
 export function matchWorkspaceDirs(patterns, candidateDirs) {
   const compile = (/** @type {string} */ p) =>
-    new RegExp(`^${globToRegexSource(p.replace(/^\.\//, '').replace(/\/+$/, ''))}$`);
+    compileGlob(p.replace(/^\.\//, '').replace(/\/+$/, ''));
   const include = patterns.filter((p) => !p.startsWith('!')).map(compile);
   const exclude = patterns.filter((p) => p.startsWith('!')).map((p) => compile(p.slice(1)));
   return candidateDirs
