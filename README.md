@@ -37,6 +37,19 @@ Everyone writing agent instruction files has stale ones. A script gets renamed, 
 | `AMC010` legacy-filename | `codex.md`, or `CLAUDE.md` and `AGENTS.md` that have drifted apart |
 | `AMC011` duplicate-instruction | The same instruction twice |
 
+## Compatibility
+
+JavaScript and TypeScript repos get every rule. Other stacks get the language-agnostic ones.
+
+| Ecosystem | Level | What works |
+|---|---|---|
+| npm, pnpm, yarn, bun | Full | all rules |
+| Any language with a Makefile | Partial | `make` targets (`AMC001`) |
+| Python, Go, Rust, Java, others | Partial | paths (`AMC002`), links and imports (`AMC005`), hygiene (`AMC006`-`AMC011`), tabs vs spaces (`AMC003`) |
+| pip, poetry, uv, cargo, go, maven... | None | not detected: the tool stays quiet instead of guessing |
+
+Needs Node 20 or newer; `git` is optional (used for rename suggestions). Per-rule table and details: [docs/compatibility.md](docs/compatibility.md).
+
 ## Demo
 
 Given this `AGENTS.md`:
