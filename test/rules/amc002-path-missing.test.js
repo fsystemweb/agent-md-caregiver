@@ -14,6 +14,24 @@ const TREE = {
 };
 const run = (md, extra = {}, opts) => check('AMC002', { ...TREE, 'AGENTS.md': md, ...extra }, opts);
 
+describe('AMC002 stays silent when unsure (#11)', () => {
+  test('subfolder-relative file and directory', () => {
+    const files = { 'frontend/src/main.tsx': '', 'backend/appsettings.json': '{}' };
+    assert.deepEqual(run('Entry is `main.tsx`; settings in `appsettings.json`; also `utils/format.ts`.', files), []);
+    assert.deepEqual(run('See `routes/user.ts`.'), []);
+    assert.deepEqual(run('See `./main.tsx`.', files), []);
+  });
+
+  test('package specifiers', () => {
+    assert.deepEqual(run('Import from `three@0.160.0/examples/jsm/`, `@scope/pkg@1.2.3/dist/x.js`.'), []);
+  });
+
+  test('still fires when nothing ends with the path', () => {
+    assert.equal(run('`main.tsx`')[0].message, '`main.tsx` does not exist');
+    assert.equal(run('`app/main.tsx`', { 'src/main.tsx': '' }).length, 1);
+  });
+});
+
 describe('AMC002 fires', () => {
   test('missing file: message, position, evidence', () => {
     const [f] = run('# A\n\nHandlers live in `src/routes/users.ts`.\n');
