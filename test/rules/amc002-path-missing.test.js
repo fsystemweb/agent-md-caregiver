@@ -22,6 +22,19 @@ describe('AMC002 stays silent when unsure (#11)', () => {
     assert.deepEqual(run('See `./main.tsx`.', files), []);
   });
 
+  test('git-ignored file that exists on disk under a subfolder', () => {
+    const files = { 'backend/appsettings.example.json': '{}', '.gitignore': 'backend/appsettings.json\n' };
+    const out = check('AMC002', { ...files, 'backend/appsettings.json': '{}', 'AGENTS.md': 'Set it in `appsettings.json`.' }, { git: hasGit });
+    assert.deepEqual(out, []);
+    assert.equal(check('AMC002', { ...files, 'AGENTS.md': 'Set it in `appsettings.json`.' }, { git: hasGit }).length, 1);
+  });
+
+  test('module specifier without its extension', () => {
+    const files = { 'frontend/src/state.ts': '', 'frontend/src/lib/index.ts': '' };
+    assert.deepEqual(run('Mocks `./state` and `state` and `lib/index`.', files), []);
+    assert.equal(run('Mocks `./store`.', files).length, 1);
+  });
+
   test('package specifiers', () => {
     assert.deepEqual(run('Import from `three@0.160.0/examples/jsm/`, `@scope/pkg@1.2.3/dist/x.js`.'), []);
   });

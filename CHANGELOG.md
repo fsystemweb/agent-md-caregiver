@@ -9,7 +9,7 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 - Compatibility table (languages, package managers, per-rule dependency on JavaScript) in the README and `docs/compatibility.md` (#13).
 
 ### Fixed
-- `AMC002` no longer reports paths written relative to a subfolder (`main.tsx` for `src/main.tsx`) or package specifiers such as `three@0.160.0/examples/jsm/` (#11).
+- `AMC002` no longer reports paths written relative to a subfolder (`main.tsx` for `src/main.tsx`) or package specifiers such as `three@0.160.0/examples/jsm/` (#11). It also accepts git-ignored files that exist on disk under a subfolder (`backend/appsettings.json`) and module specifiers without an extension (`./state` for `src/state.ts`).
 
 ## [0.1.0] - 2026-11-05
 
