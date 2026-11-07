@@ -1,0 +1,576 @@
+{
+ "tool": "agent-md-caregiver 0.1.0",
+ "repos": [
+  {
+   "vis": "private",
+   "family": "Backend / API",
+   "initial": "none",
+   "action": "created",
+   "loc": 24,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R01"
+  },
+  {
+   "vis": "private",
+   "family": "Backend / API",
+   "initial": "none",
+   "action": "created",
+   "loc": 25,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 0,
+   "id": "R02"
+  },
+  {
+   "vis": "public",
+   "family": "Backend / API",
+   "initial": "none",
+   "action": "created",
+   "loc": 27,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R03"
+  },
+  {
+   "vis": "private",
+   "family": "Backend / API",
+   "initial": "none",
+   "action": "created",
+   "loc": 29,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 3,
+   "id": "R04"
+  },
+  {
+   "vis": "private",
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 24,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R05"
+  },
+  {
+   "vis": "private",
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 24,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 1,
+    "i": 3
+   },
+   "handoff": 69,
+   "id": "R06"
+  },
+  {
+   "vis": "private",
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 24,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R07"
+  },
+  {
+   "vis": "private",
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 25,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 2,
+   "id": "R08"
+  },
+  {
+   "vis": "private",
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 25,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 0,
+   "id": "R09"
+  },
+  {
+   "vis": "public",
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 25,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 2,
+   "id": "R10"
+  },
+  {
+   "vis": "private",
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 26,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R11"
+  },
+  {
+   "vis": "public",
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 27,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R12"
+  },
+  {
+   "vis": "public",
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 27,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 0,
+   "id": "R13"
+  },
+  {
+   "vis": "private",
+   "family": "Frontend SPA / full-stack",
+   "initial": "claude-only",
+   "action": "renamed + improved",
+   "loc": 28,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 1
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R14"
+  },
+  {
+   "vis": "public",
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 28,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R15"
+  },
+  {
+   "vis": "public",
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 29,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R16"
+  },
+  {
+   "vis": "public",
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 31,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 3,
+   "id": "R17"
+  },
+  {
+   "vis": "private",
+   "family": "Mobile app (hybrid)",
+   "initial": "none",
+   "action": "created",
+   "loc": 25,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R18"
+  },
+  {
+   "vis": "private",
+   "family": "Mobile app (hybrid)",
+   "initial": "none",
+   "action": "created",
+   "loc": 27,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 0,
+   "id": "R19"
+  },
+  {
+   "vis": "public",
+   "family": "Next.js app",
+   "initial": "none",
+   "action": "created",
+   "loc": 24,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R20"
+  },
+  {
+   "vis": "public",
+   "family": "Next.js app",
+   "initial": "none",
+   "action": "created",
+   "loc": 26,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 0,
+   "id": "R21"
+  },
+  {
+   "vis": "private",
+   "family": "Next.js app",
+   "initial": "none",
+   "action": "created",
+   "loc": 29,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 2,
+   "id": "R22"
+  },
+  {
+   "vis": "private",
+   "family": "Next.js app",
+   "initial": "both",
+   "action": "improved",
+   "loc": 29,
+   "before": {
+    "e": 0,
+    "w": 1,
+    "i": 2
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 2,
+   "id": "R23"
+  },
+  {
+   "vis": "private",
+   "family": "Next.js app",
+   "initial": "none",
+   "action": "created",
+   "loc": 29,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R24"
+  },
+  {
+   "vis": "public",
+   "family": "Next.js app",
+   "initial": "none",
+   "action": "created",
+   "loc": 35,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 0,
+   "id": "R25"
+  },
+  {
+   "vis": "private",
+   "family": "Other",
+   "initial": "none",
+   "action": "created",
+   "loc": 24,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 2,
+   "id": "R26"
+  },
+  {
+   "vis": "public",
+   "family": "Other",
+   "initial": "claude-only",
+   "action": "renamed + improved",
+   "loc": 30,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 2
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 3,
+   "id": "R27"
+  },
+  {
+   "vis": "public",
+   "family": "Python app / CLI / bot",
+   "initial": "none",
+   "action": "created",
+   "loc": 22,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 0,
+   "id": "R28"
+  },
+  {
+   "vis": "private",
+   "family": "Python app / CLI / bot",
+   "initial": "none",
+   "action": "created",
+   "loc": 23,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 2,
+   "id": "R29"
+  },
+  {
+   "vis": "public",
+   "family": "Python app / CLI / bot",
+   "initial": "none",
+   "action": "created",
+   "loc": 23,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 2,
+   "id": "R30"
+  },
+  {
+   "vis": "public",
+   "family": "Python app / CLI / bot",
+   "initial": "none",
+   "action": "created",
+   "loc": 26,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R31"
+  },
+  {
+   "vis": "public",
+   "family": "Python app / CLI / bot",
+   "initial": "none",
+   "action": "created",
+   "loc": 26,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 0,
+   "id": "R32"
+  },
+  {
+   "vis": "private",
+   "family": "Python app / CLI / bot",
+   "initial": "none",
+   "action": "created",
+   "loc": 29,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 1,
+   "id": "R33"
+  },
+  {
+   "vis": "public",
+   "family": "Python app / CLI / bot",
+   "initial": "none",
+   "action": "created",
+   "loc": 30,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 3,
+   "id": "R34"
+  },
+  {
+   "vis": "private",
+   "family": "Static / content",
+   "initial": "none",
+   "action": "created",
+   "loc": 22,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 3,
+   "id": "R35"
+  },
+  {
+   "vis": "public",
+   "family": "Static / content",
+   "initial": "none",
+   "action": "created",
+   "loc": 25,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 2,
+   "id": "R36"
+  },
+  {
+   "vis": "public",
+   "family": "Static / content",
+   "initial": "claude-only",
+   "action": "renamed + improved",
+   "loc": 27,
+   "before": {
+    "e": 0,
+    "w": 1,
+    "i": 2
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "handoff": 5,
+   "id": "R37"
+  }
+ ]
+}
