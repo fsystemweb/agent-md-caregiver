@@ -2,6 +2,11 @@
 
 All notable changes are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/) and the project follows [Semantic Versioning](https://semver.org/). The JSON report has its own `schemaVersion`, see [docs/json-schema.md](docs/json-schema.md).
 
+## [Unreleased]
+
+### Fixed
+- `AMC002` no longer reports paths written relative to a subfolder (`main.tsx` for `src/main.tsx`) or package specifiers such as `three@0.160.0/examples/jsm/` (#11).
+
 ## [0.1.0] - 2026-11-05
 
 First release. Not published to npm yet.
@@ -29,4 +34,3 @@ First release. Not published to npm yet.
 
 ### Known limitations
 - The parser only reads a line as an instruction when it has a verb such as always, never, must, do not, prefer or use, so some contradictions are missed (on purpose: false positives are the main risk).
-- Paths written relative to a subfolder (`main.tsx` for `src/main.tsx`) can be reported by `AMC002` even though a human would understand them.

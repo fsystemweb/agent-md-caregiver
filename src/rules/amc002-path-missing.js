@@ -6,6 +6,23 @@ import { closestPath } from './lib/suggest.js';
 
 /** @typedef {import('./index.js').RuleFinding} RuleFinding */
 
+/** `three@0.160.0/examples/jsm/`, `@scope/pkg@1.2.3/dist/x.js`: a package specifier, not a repo path. */
+const PACKAGE_SPECIFIER = /^(?:@[\w.-]+\/)?[\w.-]+@[\w.^~<>=*-]+(?:\/|$)/;
+
+/**
+ * Is a path written relative to some subfolder ("main.tsx" for "src/main.tsx")? True when an
+ * existing file or directory ends with the written path. Humans read these fine, so we stay silent.
+ * @param {import('../repo/index.js').RepoContext} repo
+ * @param {string} written
+ * @returns {boolean}
+ */
+function existsBelow(repo, written) {
+  const tail = written.replace(/^(?:\.\/)+/, '').replace(/\/+$/, '');
+  if (!tail || tail.startsWith('../') || tail === '..') return false;
+  const suffix = '/' + tail;
+  return repo.files().some((f) => f.endsWith(suffix)) || repo.dirs().some((d) => d.endsWith(suffix));
+}
+
 const NODE_VALUE_FLAGS = new Set(['-r', '--require', '--import', '--loader', '--env-file', '--experimental-loader']);
 const NODE_CODE_FLAGS = new Set(['-e', '--eval', '-p', '--print']);
 
@@ -66,7 +83,8 @@ export const pathMissing = {
     'What it stays silent on: globs, placeholders, URLs, absolute and `~/` paths, `path/to/...`,',
     'anything .gitignore covers or that exists on disk (dist/, .env), `node_modules`, extensionless',
     'names whose parent directory does not exist (probably an API route, not a file), and paths after',
-    '"never", "avoid", "e.g.", "for example".',
+    '"never", "avoid", "e.g.", "for example", package specifiers such as `three@0.160.0/examples/`, and',
+    'paths written relative to a subfolder (`main.tsx` when only `src/main.tsx` exists).',
     'Links and `@` imports are checked by AMC005.',
     '',
     'Fix: correct the path, or remove the reference.',
@@ -88,8 +106,10 @@ export const pathMissing = {
       const written = stripLineRef(target);
       if (/^(?:\/|~|[A-Za-z]:)/.test(written) || /(^|\/)(?:path\/to|node_modules)(\/|$)/.test(written)) return;
       const joined = dir ? posix.join(dir, written) : written;
+      if (PACKAGE_SPECIFIER.test(written)) return;
       const { status, normalized } = checkPath(repo, file, joined);
       if (status !== 'missing') return;
+      if (existsBelow(repo, written)) return;
 
       const where = whereDidItGo(repo, normalized, closestPath);
       const base = posix.basename(normalized);
