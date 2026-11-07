@@ -1,5 +1,21 @@
 const ASSIGNMENT = /^\s*(?:export\s+|override\s+)?[A-Za-z0-9_.-]+\s*(?:::?:?|[?+!])?=/;
-const TARGET = /^([^\s:#=$%][^:#=$%]*?)\s*::?(?!=)/;
+/** Lines longer than this are not Makefile rules; skipping them bounds the work on a hostile file. */
+const MAX_LINE_LENGTH = 4000;
+const NAMES = /^[^\s:#=$%][^:#=$%]*/;
+
+/**
+ * The text before the colon of a rule line (`all test: deps`), or null when the line is not a rule.
+ * Linear: the name part cannot contain a colon, so the first colon ends it. A colon followed by `=`
+ * is an assignment (`:=`), not a rule.
+ * @param {string} line
+ * @returns {string | null}
+ */
+function ruleNames(line) {
+  const m = NAMES.exec(line);
+  if (!m) return null;
+  const i = m[0].length;
+  return line[i] === ':' && line[i + 1] !== '=' ? m[0] : null;
+}
 const PHONY = /^\.PHONY\s*:(.*)$/;
 
 /**
@@ -12,7 +28,7 @@ const PHONY = /^\.PHONY\s*:(.*)$/;
 export function parseMakeTargets(text) {
   const targets = new Set();
   for (const line of text.split(/\r?\n/)) {
-    if (!line.trim() || line.startsWith('\t') || /^\s*#/.test(line)) continue;
+    if (line.length > MAX_LINE_LENGTH || !line.trim() || line.startsWith('\t') || /^\s*#/.test(line)) continue;
     const phony = PHONY.exec(line);
     if (phony) {
       for (const name of phony[1].split('#')[0].split(/\s+/)) {
@@ -21,9 +37,9 @@ export function parseMakeTargets(text) {
       continue;
     }
     if (ASSIGNMENT.test(line)) continue;
-    const m = TARGET.exec(line);
-    if (!m) continue;
-    for (const name of m[1].split(/\s+/)) {
+    const names = ruleNames(line);
+    if (names === null) continue;
+    for (const name of names.split(/\s+/)) {
       if (name && !name.startsWith('.') && !/[$%]/.test(name)) targets.add(name);
     }
   }

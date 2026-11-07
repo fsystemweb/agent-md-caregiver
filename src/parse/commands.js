@@ -7,6 +7,8 @@ const BARE_OK = new Set(['make', 'pytest', 'yarn']);
 /** `node 20`, `python 3.12`: a version mention, not a command. */
 const VERSION_ARG = /^v?\d+(?:\.\d+)*[+x]?$/;
 const ENV_ASSIGNMENT = /^[A-Za-z_][A-Za-z0-9_]*=\S*\s+/;
+/** A command continued with a trailing backslash is joined for at most this many lines. */
+const MAX_CONTINUATIONS = 100;
 const SEPARATOR = /&&|\|\||;|\|/g;
 
 /**
@@ -23,7 +25,8 @@ export function parseCommandSegment(segment, allowBare) {
     offset += m[0].length;
     rest = rest.slice(m[0].length);
   }
-  rest = rest.replace(/\s+#.*$/, '');
+  const hash = rest.search(/\s#/); // a trailing comment; a plain search stays linear on long whitespace runs
+  if (hash !== -1) rest = rest.slice(0, hash).trimEnd();
   if (!rest || hasPlaceholder(rest)) return null;
   const match = TOOL.exec(rest);
   if (!match) return null;
@@ -67,7 +70,7 @@ export function commandsFromFence(body, file) {
     let source = body[i].text;
     let joined = source;
     // Line continuations: `npm run build \` + next line. The claim stays on the first line.
-    while (joined.trimEnd().endsWith('\\') && i + 1 < body.length) {
+    for (let joins = 0; joins < MAX_CONTINUATIONS && joined.trimEnd().endsWith('\\') && i + 1 < body.length; joins++) {
       joined = joined.trimEnd().slice(0, -1).trimEnd() + ' ' + body[++i].text.trim();
     }
     const prompt = /^(\s*)(?:\$|>)\s+/.exec(joined);
@@ -75,9 +78,9 @@ export function commandsFromFence(body, file) {
     const content = joined.slice(promptLen);
     if (!content.trim() || /^\s*#/.test(content)) continue;
     for (const seg of splitSegments(content)) {
-      const cd = /^\s*(cd|pushd|popd)(?:\s+(.*?))?\s*$/.exec(seg.text);
+      const cd = /^\s*(cd|pushd|popd)(?:\s+(.*))?$/.exec(seg.text);
       if (cd) {
-        dir = nextDir(dir, cd[1], cd[2]);
+        dir = nextDir(dir, cd[1], cd[2]?.trim());
         continue;
       }
       const cmd = parseCommandSegment(seg.text, true);

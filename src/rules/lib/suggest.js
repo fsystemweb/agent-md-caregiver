@@ -1,5 +1,7 @@
 import { posix } from 'node:path';
 
+const MAX_NAME = 100;
+
 /**
  * Edit distance where swapping two adjacent characters ("buidl" / "build") counts as one edit.
  * @param {string} a
@@ -8,6 +10,8 @@ import { posix } from 'node:path';
  */
 export function distance(a, b) {
   if (a === b) return 0;
+  // Names come from the checked files. Nothing that long is a typo of something else, and the table below is len(a) x len(b).
+  if (a.length > MAX_NAME || b.length > MAX_NAME) return Math.max(a.length, b.length);
   /** @type {number[][]} */
   const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
   for (let j = 0; j <= b.length; j++) d[0][j] = j;
