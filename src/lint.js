@@ -1,6 +1,5 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { parse } from './parse/index.js';
+import { readTextInside } from './repo/safe-read.js';
 import { RULES } from './rules/index.js';
 
 /** @typedef {import('./rules/index.js').Severity} Severity */
@@ -34,7 +33,8 @@ export function lint(repo, files, options) {
   /** @type {Finding[]} */
   const findings = [];
   for (const file of files) {
-    const text = readFileSync(join(repo.root, file), 'utf8');
+    const text = readTextInside(repo.root, file);
+    if (text === null) continue; // unreadable, or a symlink that leaves the repo root
     const parsed = parse(text, { file });
     for (const rule of RULES) {
       const level = options.ruleLevels[rule.id] ?? rule.severity;

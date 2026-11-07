@@ -1,4 +1,5 @@
 import { statSync } from 'node:fs';
+import { realInside } from './repo/safe-read.js';
 import { isAbsolute, relative, resolve, sep } from 'node:path';
 
 /** File names that count as agent instruction files. */
@@ -15,6 +16,7 @@ export function discover(repo, dir = '') {
   return repo
     .files()
     .filter((f) => f.startsWith(prefix) && INSTRUCTION_FILES.has(f.slice(f.lastIndexOf('/') + 1)))
+    .filter((f) => realInside(repo.root, f) !== null) // a symlink leaving the repo is not read
     .sort();
 }
 
@@ -43,6 +45,7 @@ export function resolveTargets(repo, paths, cwd) {
     }
     const posixRel = rel.split(sep).join('/');
     if (st.isDirectory()) discover(repo, posixRel).forEach((f) => out.add(f));
+    else if (realInside(repo.root, posixRel) === null) throw new Error(`${p}: resolves outside the repo root`);
     else out.add(posixRel);
   }
   return [...out].sort();

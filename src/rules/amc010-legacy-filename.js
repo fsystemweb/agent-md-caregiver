@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readTextInside } from '../repo/safe-read.js';
 import { join, posix } from 'node:path';
 import { hasImport } from './lib/prose.js';
 
@@ -53,12 +53,8 @@ export const legacyFilename = {
     }
 
     if (name === 'CLAUDE.md' && repo.hasPath(sibling('AGENTS.md')) && !hasImport(parsed)) {
-      let agents;
-      try {
-        agents = readFileSync(join(repo.root, sibling('AGENTS.md')), 'utf8');
-      } catch {
-        return [];
-      }
+      const agents = readTextInside(repo.root, sibling('AGENTS.md'));
+      if (agents === null) return [];
       if (agents === text) return [];
       const mine = substantial(text);
       const shared = [...substantial(agents)].filter((l) => mine.has(l)).length;

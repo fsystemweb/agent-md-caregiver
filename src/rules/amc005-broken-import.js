@@ -1,4 +1,5 @@
-import { readFileSync, realpathSync } from 'node:fs';
+import { realpathSync } from 'node:fs';
+import { readTextInside } from '../repo/safe-read.js';
 import { posix } from 'node:path';
 import { checkPath, whereDidItGo } from './lib/context.js';
 import { closestPath } from './lib/suggest.js';
@@ -103,7 +104,7 @@ function importsOrMirrors(repo, file, sibling, text, parsed) {
     const a = realpathSync(`${repo.root}/${file}`);
     const b = realpathSync(`${repo.root}/${sibling}`);
     if (a === b) return true;
-    return readFileSync(b, 'utf8').trim() === text.trim();
+    return readTextInside(repo.root, sibling)?.trim() === text.trim();
   } catch {
     return false;
   }
