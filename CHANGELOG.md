@@ -5,6 +5,7 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 ## [Unreleased]
 
 ### Added
+- Agent review layer (#16): `--format agent` prints a versioned review handoff (`schemaVersion: 1`, documented in `docs/handoff-schema.md`) with what the rules could not decide: skipped commands, sections with nothing checkable, candidate contradictions and unchecked prose instructions. The package ships a Claude Code skill (`skills/agent-md-review`) with prompt-injection guidance. The tool still makes no network calls and runs no subprocess for it, and exit codes come from the deterministic rules only.
 - Python support (#14). Package managers pip and uv are detected (`uv.lock`, `[tool.uv]`, `requirements*.txt`); poetry, pipenv and pdm are detected too. `AMC004` flags `pip install x` in a uv repo and the reverse, with a safe translation (`uv add x`); `AMC003` flags "use uv" against `pip install x`, within and across files; `AMC001` checks `poe <task>`, near-miss `uv run <script>` against `pyproject.toml`, and `pytest` in a project that never mentions it. `python -m venv`, `pip install -r/-e/.`, `uvx`, `pipx`, `uv pip` and global installs are never flagged. A small zero-dependency TOML reader backs it; anything it does not understand means "stay silent".
 - Compatibility table (languages, package managers, per-rule dependency on JavaScript) in the README and `docs/compatibility.md` (#13).
 

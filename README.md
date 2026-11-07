@@ -100,6 +100,7 @@ The exit code is `1`. `test/readme-demo.test.js` rebuilds that repo and checks t
 npx agent-md-caregiver                 # auto-discovers AGENTS.md, CLAUDE.md, codex.md (also nested ones)
 npx agent-md-caregiver AGENTS.md       # check specific files
 npx agent-md-caregiver --format json   # machine-readable, for agents and scripts
+npx agent-md-caregiver --format agent  # findings + what the rules could not judge, for an agent to review
 npx agent-md-caregiver --strict        # warnings fail too (CI)
 npx agent-md-caregiver --explain AMC002
 ```
@@ -133,6 +134,10 @@ Every finding in `--format json` carries file, line, evidence and a concrete sug
 ```md
 Before finishing a task that changes scripts, folders or tooling, run `npx agent-md-caregiver` and fix anything it reports.
 ```
+
+### Agent review (optional)
+
+The rules check facts. For what they cannot judge (vague lines, conflicts in different words, sections with nothing checkable), `--format agent` prints a [review handoff](docs/handoff-schema.md) for your coding agent, and the package ships a Claude Code skill (`skills/agent-md-review`) that reviews it and proposes edits you approve. The tool itself still does not call an LLM, use the network or run your commands, and exit codes never depend on the review. See [docs/agent-review.md](docs/agent-review.md).
 
 ## Our standard: AGENTS.md first
 

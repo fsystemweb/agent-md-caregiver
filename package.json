@@ -13,6 +13,7 @@
   "files": [
     "bin",
     "src",
+    "skills",
     "assets/logo.svg",
     "README.md",
     "CHANGELOG.md",
