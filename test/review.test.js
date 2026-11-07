@@ -164,3 +164,11 @@ describe('the shipped skill', () => {
     assert.match(skill, /--format agent/);
   });
 });
+
+describe('untrusted-input guidance names every file-derived field (security audit hardening)', () => {
+  test('the guidance string mentions message, suggestion and reason, not only text and evidence', () => {
+    const { stdout } = cli(['--format', 'agent']);
+    const g = JSON.parse(stdout).guidance.untrustedInput;
+    for (const word of ['text', 'evidence', 'message', 'suggestion', 'reason']) assert.ok(g.includes(word), word);
+  });
+});
