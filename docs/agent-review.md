@@ -1,3 +1,7 @@
+---
+title: Agent review
+---
+
 # Agent review
 
 The rules check **facts**: a script exists, a path exists, the lockfile matches. They cannot judge natural language: a vague line, two instructions that conflict in different words, a section that says nothing an agent can use. The agent review layer covers that, **inside your coding agent** (Claude Code, Codex, Cursor, ...), so the tool itself stays offline, dependency-free and deterministic. It never calls an LLM, never uses the network and never runs a command from your file.

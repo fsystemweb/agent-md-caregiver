@@ -1,3 +1,7 @@
+---
+title: Review handoff schema
+---
+
 # Review handoff schema (version 1)
 
 `agent-md-caregiver --format agent` prints one JSON document to stdout: the deterministic findings plus a list of things the rules **could not decide**, for the user's coding agent to review. See [agent-review.md](agent-review.md) for how to use it. The normal report is documented in [json-schema.md](json-schema.md) and is unchanged.

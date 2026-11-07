@@ -1,0 +1,10 @@
+title: agent-md-caregiver
+description: A linter for your agent instructions. Checks AGENTS.md, CLAUDE.md and codex.md against the actual repo.
+theme: jekyll-theme-minimal
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: false
+exclude:
+  - README.md

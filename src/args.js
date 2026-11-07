@@ -3,6 +3,7 @@ import { ALL_FORMATS } from './report/index.js';
 import { findRule, RULES } from './rules/index.js';
 
 export const DEFAULT_MAX_LINES = 150;
+export const DOCS_URL = 'https://fsystemweb.github.io/agent-md-caregiver/';
 const LEVELS = ['off', 'info', 'warn', 'error'];
 
 /** A mistake in how the tool was invoked. The CLI prints the message and exits 2. */
@@ -19,6 +20,7 @@ export class UsageError extends Error {}
  * @property {boolean} init
  * @property {boolean} write
  * @property {string | undefined} explain
+ * @property {boolean} docs
  * @property {boolean} help
  * @property {boolean} version
  * @property {boolean} noColor
@@ -44,6 +46,7 @@ export function parseCli(argv) {
         init: { type: 'boolean' },
         write: { type: 'boolean' },
         explain: { type: 'string' },
+        docs: { type: 'boolean' },
         help: { type: 'boolean', short: 'h' },
         version: { type: 'boolean', short: 'v' },
         'no-color': { type: 'boolean' },
@@ -95,6 +98,7 @@ export function parseCli(argv) {
     init: Boolean(values.init),
     write: Boolean(values.write),
     explain: values.explain,
+    docs: Boolean(values.docs),
     help: Boolean(values.help),
     version: Boolean(values.version),
     noColor: Boolean(values['no-color']),
@@ -119,6 +123,7 @@ Options:
   --init               Print the recommended AGENTS.md skeleton (writes nothing)
   --write              With --init: create AGENTS.md at the root if it does not exist
   --explain <id>       Show what a rule checks and how to fix it
+  --docs               Print the documentation URL
   --no-color           Disable colors (NO_COLOR is also respected)
   -v, --version        Print the version
   -h, --help           Show this help
@@ -133,4 +138,6 @@ Exit codes:
 
 Rules:
 ${RULES.map((r) => `  ${r.id}  ${r.name.padEnd(24)} ${r.summary}`).join('\n')}
+
+Docs: ${DOCS_URL}
 `;

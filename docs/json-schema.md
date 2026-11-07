@@ -1,3 +1,7 @@
+---
+title: JSON report schema
+---
+
 # JSON report schema (version 1)
 
 `agent-md-caregiver --format json` prints one JSON document to stdout. It is meant for agents and scripts, so it is stable and versioned: fields are only ever added within a schema version, and any breaking change bumps `schemaVersion`.
@@ -73,3 +77,7 @@ The report does not carry the exit code; read it from the process.
 | `0` | Clean. `info` findings never fail a run. |
 | `1` | At least one `error` finding, or with `--strict` at least one `warn` finding. |
 | `2` | Usage or internal error. Nothing is written to stdout; the message is on stderr. |
+
+## SARIF
+
+`--format sarif` prints a SARIF 2.1.0 log with one run. `tool.driver.rules` lists every rule (`id`, `name`, short description, default level: `error` → `error`, `warn` → `warning`, `info` → `note`), and each finding is a `result` with `ruleId`, `level`, `message`, and a physical location (file, line, column). Use it with `github/codeql-action/upload-sarif`; see the [CI guide](ci.md).
