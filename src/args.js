@@ -111,7 +111,8 @@ A directory path checks the instruction files inside it.
 
 Options:
   --root <dir>         Repo root (default: current directory)
-  --format <name>      pretty (default), json, github (Actions annotations) or sarif
+  --format <name>      pretty (default), json, github (Actions annotations), sarif or agent
+                       (agent: findings plus what the rules could not judge, for a coding agent to review)
   --max-lines <n>      Line budget for instruction files (default: ${DEFAULT_MAX_LINES})
   --rule <id>=<level>  Override a rule: off, info, warn or error. Repeatable.
   --strict             Warnings fail the run too

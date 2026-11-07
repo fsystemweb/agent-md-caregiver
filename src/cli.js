@@ -7,7 +7,7 @@ import { loadConfig } from './config.js';
 import { discover, resolveTargets } from './discover.js';
 import { INIT_TEMPLATE } from './init-template.js';
 import { exitCodeFor, lint } from './lint.js';
-import { formatGithub, formatJson, formatPretty, formatSarif } from './report/index.js';
+import { formatAgent, formatGithub, formatJson, formatPretty, formatSarif } from './report/index.js';
 import { createRepoContext } from './repo/index.js';
 import { findRule } from './rules/index.js';
 
@@ -92,6 +92,8 @@ function runInner(argv, io) {
     io.stdout.write(formatJson(result, { version: pkg.version }));
   } else if (opts.format === 'sarif') {
     io.stdout.write(formatSarif(result, { version: pkg.version }));
+  } else if (opts.format === 'agent') {
+    io.stdout.write(formatAgent(result, repo, { version: pkg.version }));
   } else if (opts.format === 'github') {
     io.stdout.write(formatGithub(result));
   } else {
