@@ -8,6 +8,7 @@ import { discover, resolveTargets } from './discover.js';
 import { INIT_TEMPLATE } from './init-template.js';
 import { exitCodeFor, lint } from './lint.js';
 import { formatAgent, formatGithub, formatJson, formatPretty, formatSarif } from './report/index.js';
+import { visible } from './report/sanitize.js';
 import { createRepoContext } from './repo/index.js';
 import { findRule } from './rules/index.js';
 
@@ -34,9 +35,10 @@ export function run(argv, io) {
   } catch (e) {
     const err = /** @type {Error} */ (e);
     if (err instanceof UsageError) {
-      io.stderr.write(`agent-md-caregiver: ${err.message}\nTry --help for usage.\n`);
+      // Messages can quote the checked repo (a config key, a file name), so show control characters instead of printing them.
+      io.stderr.write(`agent-md-caregiver: ${visible(err.message, { keepLineBreaks: true })}\nTry --help for usage.\n`);
     } else {
-      io.stderr.write(`agent-md-caregiver: internal error: ${err.stack ?? err.message}\n`);
+      io.stderr.write(`agent-md-caregiver: internal error: ${visible(err.stack ?? err.message, { keepLineBreaks: true })}\n`);
     }
     return 2;
   }
