@@ -1,3 +1,5 @@
+import { visible } from './sanitize.js';
+
 const LEVEL = { error: 'error', warn: 'warning', info: 'notice' };
 
 /** Escape the message part of a workflow command. */
@@ -14,8 +16,8 @@ const prop = (s) => data(s).replace(/:/g, '%3A').replace(/,/g, '%2C');
 export function formatGithub(result) {
   return result.findings
     .map((f) => {
-      const text = f.suggestion ? `${f.message}. Fix: ${f.suggestion}` : f.message;
-      const props = `file=${prop(f.file)},line=${f.line},col=${f.col},title=${prop(`${f.ruleId} ${f.severity}`)}`;
+      const text = visible(f.suggestion ? `${f.message}. Fix: ${f.suggestion}` : f.message, { keepLineBreaks: true });
+      const props = `file=${prop(visible(f.file, { keepLineBreaks: true }))},line=${f.line},col=${f.col},title=${prop(`${f.ruleId} ${f.severity}`)}`;
       return `::${LEVEL[f.severity]} ${props}::${data(text)}\n`;
     })
     .join('');

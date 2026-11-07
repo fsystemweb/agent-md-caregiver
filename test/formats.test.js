@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { after, describe, test } from 'node:test';
 import { run } from '../src/cli.js';
-import { formatGithub, formatSarif } from '../src/report/index.js';
+import { formatGithub, formatPretty, formatSarif } from '../src/report/index.js';
 import { RULES } from '../src/rules/index.js';
 import { makeRepo } from './helpers/make-repo.js';
 
@@ -102,5 +102,29 @@ describe('through the CLI', () => {
     const b = cli(['--format', 'sarif'], FILES);
     assert.equal(a.stdout, b.stdout);
     assert.ok(!a.stdout.includes('/tmp'));
+  });
+});
+
+describe('untrusted text in reports (security audit: terminal escape injection)', () => {
+  const hostile = '\u001b[2K\u001b[1A\u001b[32mALL OK\u001b[0m \u202e\u0007 end';
+  const shown = '\\x1b[2K\\x1b[1A\\x1b[32mALL OK\\x1b[0m \\u202e\\x07 end';
+
+  test('pretty output shows control characters instead of passing them to the terminal', () => {
+    const out = formatPretty(result([finding({ message: hostile, evidence: hostile, suggestion: hostile, file: `a${hostile}.md` })]), { color: false });
+    assert.ok(!/[\u0000-\u0008\u000b-\u001f\u007f-\u009f\u202e]/.test(out.replace(/\n/g, '')), 'no control characters in output');
+    assert.ok(out.includes(`> ${shown}`));
+    assert.ok(out.includes(`fix: ${shown}`));
+  });
+
+  test('pretty output keeps ordinary text, tabs and its own colors', () => {
+    const out = formatPretty(result([finding({ evidence: 'a\tb' })]), { color: true });
+    assert.ok(out.includes('a\tb'));
+    assert.ok(out.includes('\u001b[31m'));
+  });
+
+  test('github output also strips control characters but still escapes line breaks', () => {
+    const out = formatGithub(result([finding({ message: `${hostile}\nnext`, file: 'x.md' })]));
+    assert.ok(!/[\u0000-\u0009\u000b-\u001f\u007f-\u009f\u202e]/.test(out.replace(/\n$/, '')));
+    assert.ok(out.includes(`${shown}%0Anext`));
   });
 });

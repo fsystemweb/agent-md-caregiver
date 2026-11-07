@@ -1,3 +1,5 @@
+import { visible } from './sanitize.js';
+
 const COLORS = { error: '31', warn: '33', info: '36', dim: '2', bold: '1', green: '32' };
 
 /**
@@ -14,13 +16,13 @@ export function formatPretty(result, { color }) {
   for (const f of result.findings) {
     if (f.file !== lastFile) {
       if (lastFile !== null) lines.push('');
-      lines.push(paint('bold', f.file));
+      lines.push(paint('bold', visible(f.file)));
       lastFile = f.file;
     }
     const where = `${f.line}:${f.col}`.padEnd(7);
-    lines.push(`  ${paint('dim', where)} ${paint(f.severity, f.severity.padEnd(5))}  ${f.message}  ${paint('dim', f.ruleId)}`);
-    if (f.evidence) lines.push(`          ${paint('dim', '>')} ${f.evidence}`);
-    if (f.suggestion) lines.push(`          ${paint('green', 'fix:')} ${f.suggestion}`);
+    lines.push(`  ${paint('dim', where)} ${paint(f.severity, f.severity.padEnd(5))}  ${visible(f.message)}  ${paint('dim', f.ruleId)}`);
+    if (f.evidence) lines.push(`          ${paint('dim', '>')} ${visible(f.evidence)}`);
+    if (f.suggestion) lines.push(`          ${paint('green', 'fix:')} ${visible(f.suggestion)}`);
   }
   if (lines.length) lines.push('');
   const n = (/** @type {string} */ s) => result.findings.filter((f) => f.severity === s).length;
