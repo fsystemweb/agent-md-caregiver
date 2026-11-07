@@ -175,3 +175,62 @@ describe('AMC001 stays silent', () => {
     silent('`make a` `make b` `make c`', { Makefile: '.PHONY: a\nb c:\n\techo\n' });
   });
 });
+
+const PY = {
+  'pyproject.toml':
+    '[project]\nname = "a"\n[project.scripts]\nserve = "a:main"\nmigrate-db = "a:m"\n[tool.poe.tasks]\ntest = "pytest"\nlint = "ruff check"\n',
+  'tests/test_a.py': 'import pytest\n',
+};
+const pyRun = (md, extra = PY) => check('AMC001', { ...extra, 'AGENTS.md': md });
+
+describe('AMC001 Python (#14) fires', () => {
+  test('poe task that does not exist, with did-you-mean', () => {
+    const [f] = pyRun('# A\n\n- Test: `poe tests`\n');
+    assert.equal(f.severity, 'error');
+    assert.equal(f.message, '`poe tests`: no Poe task "tests" in pyproject.toml');
+    assert.equal(f.suggestion, 'Did you mean `poe test`?');
+    assert.equal(pyRun('`uv run poe deploy`')[0].suggestion, 'Add a "deploy" task under [tool.poe.tasks] or remove this command. Available tasks: lint, test.');
+  });
+
+  test('uv run / poetry run of a console script one typo away', () => {
+    const [f] = pyRun('`uv run serv`');
+    assert.equal(f.message, '`uv run serv`: no console script "serv" in pyproject.toml');
+    assert.equal(f.suggestion, 'Did you mean `uv run serve`?');
+    assert.equal(pyRun('`poetry run migrate_db`').length, 1);
+    assert.equal(pyRun('```sh\npoetry run migrate-dbs\n```').length, 1);
+  });
+
+  test('pytest in a Python repo that never mentions it', () => {
+    const files = { 'pyproject.toml': '[project]\nname="a"\ndependencies=["requests"]\n', 'requirements.txt': 'requests\n' };
+    const [f] = pyRun('Run `pytest -q`.', files);
+    assert.equal(f.message, '`pytest -q`: nothing in this repo mentions pytest (no dependency, config or conftest.py)');
+    assert.equal(pyRun('`python -m pytest`', files).length, 1);
+    assert.equal(pyRun('`uv run pytest`', files).length, 1);
+  });
+});
+
+describe('AMC001 Python stays silent', () => {
+  test('existing poe tasks and console scripts', () => {
+    assert.deepEqual(pyRun('`poe test` `uv run poe lint` `uv run serve` `poetry run migrate-db`'), []);
+  });
+
+  test('tools that are not console scripts, flags, paths, no pyproject', () => {
+    assert.deepEqual(pyRun('`uv run ruff check` `uv run python app.py` `uv run --frozen pytest` `uv run ./scripts/x.sh` `poe --help`'), []);
+    assert.deepEqual(pyRun('`uv run serv` `poe nothing`', {}), []);
+  });
+
+  test('poe tasks defined elsewhere or poe not configured', () => {
+    assert.deepEqual(pyRun('`poe anything`', { ...PY, 'poe_tasks.toml': '' }), []);
+    assert.deepEqual(pyRun('`poe anything`', { 'pyproject.toml': '[project]\nname="a"\n' }), []);
+  });
+
+  test('pytest declared by dependency, config, conftest or lockfile; not a Python repo', () => {
+    const base = { 'pyproject.toml': '[project]\nname="a"\n' };
+    assert.deepEqual(pyRun('`pytest`', { 'pyproject.toml': '[dependency-groups]\ndev = ["pytest>=8"]\n' }), []);
+    assert.deepEqual(pyRun('`pytest`', { ...base, 'pytest.ini': '' }), []);
+    assert.deepEqual(pyRun('`pytest`', { ...base, 'tests/conftest.py': '' }), []);
+    assert.deepEqual(pyRun('`pytest`', { ...base, 'requirements-dev.txt': 'pytest\n' }), []);
+    assert.deepEqual(pyRun('`pytest`', { ...base, 'uv.lock': 'name = "pytest"' }), []);
+    assert.deepEqual(pyRun('`pytest`', { 'package.json': '{}' }), []);
+  });
+});

@@ -9,16 +9,18 @@ import {
   runnerAssertions,
 } from './lib/assertions.js';
 import { detectPm, pmEvidenceAt } from './lib/pm.js';
+import { detectPyPm, pyAssertions, pyEvidenceAt } from './lib/python.js';
 
 /** @typedef {import('./lib/assertions.js').Assertion} Assertion */
 
 const NAMES = ['AGENTS.md', 'CLAUDE.md', 'codex.md'];
 
 /**
- * @type {{ key: 'pm' | 'indent' | 'runner', label: string, get: (p: any, lines: string[]) => Assertion[], conflict: (a: string, b: string) => boolean }[]}
+ * @type {{ key: 'pm' | 'pypm' | 'indent' | 'runner', label: string, get: (p: any, lines: string[]) => Assertion[], conflict: (a: string, b: string) => boolean }[]}
  */
 const CATEGORIES = [
   { key: 'pm', label: 'package manager', get: (p, lines) => pmAssertions(p, lines).filter((a) => !a.scoped), conflict: (a, b) => a !== b },
+  { key: 'pypm', label: 'Python package manager', get: (p, lines) => pyAssertions(p, lines).filter((a) => !a.scoped), conflict: (a, b) => a !== b },
   { key: 'indent', label: 'indentation', get: indentAssertions, conflict: indentConflict },
   { key: 'runner', label: 'test runner', get: runnerAssertions, conflict: (a, b) => a !== b },
 ];
@@ -62,7 +64,7 @@ export const contradiction = {
     'AMC003 contradiction (error)',
     '',
     'The file tells agents two incompatible things, so whichever they follow, they break the other:',
-    '  - package manager: "Always use pnpm" and later `npm install`',
+    '  - package manager: "Always use pnpm" and later `npm install` (Python too: "use uv" and later `pip install requests`)',
     '  - indentation: "Use tabs" and later "indent with 2 spaces" (or 2 spaces vs 4 spaces)',
     '  - test runner: "Use vitest" and later "Use jest"',
     '  - "Never run `x`" in one place and a command `x` to run in another',
@@ -84,6 +86,7 @@ export const contradiction = {
     const findings = [];
     const dir = dirOf(file);
     const real = detectPm(repo, dir);
+    const realPy = detectPyPm(repo, dir);
     const lines = text.split(/\r?\n/);
 
     // 1. Within the file.
@@ -94,7 +97,11 @@ export const contradiction = {
       for (const a of list.slice(1)) {
         if (a.line === base.line || !cat.conflict(base.value, a.value)) continue;
         const hint =
-          cat.key === 'pm' && real
+          cat.key === 'pypm' && realPy && !realPy.weak
+            ? `The repo uses ${realPy.pm} (${realPy.source}); change the lines that say otherwise.`
+            : cat.key === 'pypm'
+              ? 'Pick one Python package manager and use it everywhere; the lockfile shows which the repo really uses.'
+              : cat.key === 'pm' && real
             ? `The repo uses ${real.pm} (${real.source}); change the lines that say otherwise.`
             : cat.key === 'pm'
               ? 'Pick one package manager and use it everywhere; the lockfile shows which the repo really uses.'
@@ -145,6 +152,7 @@ export const contradiction = {
         const rep = theirs[0];
         if (theirs.some((t) => cat.conflict(rep.value, t.value))) continue; // it contradicts itself
         if (nested && cat.key === 'pm' && ownsManager(repo, dir, dirOf(otherFile))) continue;
+        if (nested && cat.key === 'pypm' && ownsManager(repo, dir, dirOf(otherFile), pyEvidenceAt)) continue;
         if (nested && cat.key === 'runner' && usesRunnerLocally(repo, dir, theirs.concat(cat.get(parsed, lines)))) continue;
         const clash = cat.get(parsed, lines).find((a) => cat.conflict(rep.value, a.value));
         if (!clash) continue;
@@ -170,9 +178,9 @@ export const contradiction = {
  * @param {string} dir
  * @param {string} above
  */
-function ownsManager(repo, dir, above) {
+function ownsManager(repo, dir, above, evidenceAt = pmEvidenceAt) {
   for (let d = dir; d !== above && d !== ''; d = dirOf(d)) {
-    if (pmEvidenceAt(repo, d)) return true;
+    if (evidenceAt(repo, d)) return true;
   }
   return false;
 }

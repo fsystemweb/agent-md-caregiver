@@ -1,5 +1,6 @@
 import { isHedged } from './context.js';
 import { MANAGERS, projectCommand } from './pm.js';
+import { PY_MANAGER_WORD } from './python.js';
 
 /**
  * @typedef {object} Assertion  One thing a file says about how to work in the repo.
@@ -56,6 +57,7 @@ export function pmAssertions(parsed, lines) {
       });
     } else if (c.kind === 'directive' && c.subject === 'package-manager') {
       if (NEGATIVE_VERBS.has(c.verb ?? '') || NEGATIVE.test(c.text) || /\be\.g\./i.test(c.text)) continue;
+      if (new RegExp(PY_MANAGER_WORD.source, 'i').test(c.text)) continue; // names a Python manager too: two ecosystems
       const names = new Set([...c.text.matchAll(MANAGER_WORD)].map((m) => m[1].toLowerCase()));
       if (names.size !== 1 || !MANAGERS.includes(/** @type {any} */ ([...names][0]))) continue;
       out.push({
