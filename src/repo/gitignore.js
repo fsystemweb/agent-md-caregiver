@@ -1,8 +1,18 @@
-import { globToRegexSource } from './glob.js';
+import { compileGlob } from './glob.js';
+
+/** A .gitignore line longer than this is skipped: no real pattern comes close, and it bounds the work. */
+const MAX_LINE_LENGTH = 4096;
+
+/** Strip trailing whitespace, keeping a space that is escaped with a backslash. Linear in the line length. */
+function trimEnd(line) {
+  let end = line.length;
+  while (end > 0 && /\s/.test(line[end - 1]) && line[end - 2] !== '\\') end--;
+  return line.slice(0, end);
+}
 
 /**
  * @typedef {object} IgnoreRule
- * @property {RegExp} re        Matches a path relative to the .gitignore's directory.
+ * @property {import('./glob.js').Matcher} re  Matches a path relative to the .gitignore's directory.
  * @property {boolean} negate
  * @property {boolean} dirOnly
  */
@@ -18,7 +28,8 @@ export function parseGitignore(text) {
   /** @type {IgnoreRule[]} */
   const rules = [];
   for (let line of text.split(/\r?\n/)) {
-    line = line.replace(/(?<!\\)\s+$/, '');
+    if (line.length > MAX_LINE_LENGTH) continue;
+    line = trimEnd(line);
     if (!line || line.startsWith('#')) continue;
     let negate = false;
     if (line.startsWith('!')) {
@@ -35,8 +46,7 @@ export function parseGitignore(text) {
     if (!line) continue;
     const anchored = line.includes('/');
     if (line.startsWith('/')) line = line.slice(1);
-    const body = globToRegexSource(line);
-    const re = new RegExp(anchored ? `^${body}$` : `^(?:.*/)?${body}$`);
+    const re = compileGlob(line, { floating: !anchored });
     rules.push({ re, negate, dirOnly });
   }
   return rules;
