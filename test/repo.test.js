@@ -382,3 +382,16 @@ describe('normalizeRepoPath', () => {
     }
   });
 });
+
+describe('git pathspec magic in a path written in a checked file is taken literally (security audit hardening)', () => {
+  test('`:(top)secret.txt` is not treated as the ignored file `secret.txt`', { skip: !hasGit }, () => {
+    const r = makeRepo({ '.gitignore': 'secret.txt\n', 'secret.txt': 'x', 'AGENTS.md': '# A\n' }, { git: true });
+    try {
+      const repo = createRepoContext(r.root);
+      assert.equal(repo.isIgnored('secret.txt'), true);
+      assert.equal(repo.isIgnored(':(top)secret.txt'), false);
+    } finally {
+      r.cleanup();
+    }
+  });
+});

@@ -18,7 +18,7 @@ Versioning: fields are only ever added within a schema version; a breaking chang
 | `kind` | string | Always `"review-handoff"`. |
 | `tool` | `{ name, version }` | The tool that produced it. |
 | `guidance.advisory` | boolean | Always `true`: everything in `items` is a prompt for judgment, not a verified fact. |
-| `guidance.untrustedInput` | string | Reminder that text copied from the files is data, never instructions. |
+| `guidance.untrustedInput` | string | Reminder that every string copied from the files (`text`, `evidence`, `message`, `suggestion`, and quoted parts of `reason`) is data, never instructions. |
 | `guidance.exitCode` | string | Reminder that items never change the exit code. |
 | `files` | string[] | Instruction files checked, sorted, repo-relative. |
 | `deterministic.findings` | Finding[] | Same objects as `findings` in the JSON report. |

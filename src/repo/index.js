@@ -141,7 +141,7 @@ export class RepoContext {
       const segs = n.split('/');
       if (segs.some((s) => s === 'node_modules' || s === '.git')) return true;
       if (this.isGit) {
-        const r = gitStatus(this.root, ['check-ignore', '-q', '--', slash ? `${n}/` : n]);
+        const r = gitStatus(this.root, ['--literal-pathspecs', 'check-ignore', '-q', '--', slash ? `${n}/` : n]);
         if (r.status === 0) return true;
         if (r.status === 1) return false;
       }
