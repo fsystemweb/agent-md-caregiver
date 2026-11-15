@@ -1,0 +1,423 @@
+{
+ "tool": "agent-md-caregiver 0.1.0 (main at 4e69868, plus the @/ alias fix in #35)",
+ "date": "2026-11-15",
+ "scope": "Public, non-archived repositories only. Private repositories were also checked, but nothing about them is included here.",
+ "repos": [
+  {
+   "family": "Browser game",
+   "initial": "none",
+   "action": "created",
+   "loc": 24,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 0,
+   "itemsAfter": 1,
+   "boundaryItemsAfter": 1,
+   "id": "P01"
+  },
+  {
+   "family": "Browser game",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 27,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 5,
+   "itemsAfter": 5,
+   "boundaryItemsAfter": 3,
+   "id": "P02"
+  },
+  {
+   "family": "Browser game",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 30,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 4,
+   "itemsAfter": 4,
+   "boundaryItemsAfter": 1,
+   "id": "P03"
+  },
+  {
+   "family": "CLI / bot / tool",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 19,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 4,
+   "itemsAfter": 4,
+   "boundaryItemsAfter": 3,
+   "id": "P04"
+  },
+  {
+   "family": "CLI / bot / tool",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 22,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 0,
+   "itemsAfter": 0,
+   "boundaryItemsAfter": 0,
+   "id": "P05"
+  },
+  {
+   "family": "CLI / bot / tool",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 23,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 2,
+   "itemsAfter": 2,
+   "boundaryItemsAfter": 1,
+   "id": "P06"
+  },
+  {
+   "family": "CLI / bot / tool",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 30,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 0,
+   "itemsAfter": 0,
+   "boundaryItemsAfter": 0,
+   "id": "P07"
+  },
+  {
+   "family": "Frontend SPA / full-stack",
+   "initial": "none",
+   "action": "created",
+   "loc": 24,
+   "before": null,
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 0,
+   "itemsAfter": 0,
+   "boundaryItemsAfter": 0,
+   "id": "P08"
+  },
+  {
+   "family": "Frontend SPA / full-stack",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 25,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 1,
+   "itemsAfter": 1,
+   "boundaryItemsAfter": 1,
+   "id": "P09"
+  },
+  {
+   "family": "Frontend SPA / full-stack",
+   "initial": "AGENTS.md",
+   "action": "updated (stale)",
+   "loc": 27,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 0,
+   "itemsAfter": 0,
+   "boundaryItemsAfter": 0,
+   "id": "P10"
+  },
+  {
+   "family": "Frontend SPA / full-stack",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 30,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 1,
+   "itemsAfter": 1,
+   "boundaryItemsAfter": 1,
+   "id": "P11"
+  },
+  {
+   "family": "Frontend SPA / full-stack",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 30,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 0,
+   "itemsAfter": 0,
+   "boundaryItemsAfter": 0,
+   "id": "P12"
+  },
+  {
+   "family": "Frontend SPA / full-stack",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 31,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 3,
+   "itemsAfter": 3,
+   "boundaryItemsAfter": 3,
+   "id": "P13"
+  },
+  {
+   "family": "Frontend SPA / full-stack",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 33,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 1,
+   "itemsAfter": 1,
+   "boundaryItemsAfter": 1,
+   "id": "P14"
+  },
+  {
+   "family": "Next.js app",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 24,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 1,
+   "itemsAfter": 1,
+   "boundaryItemsAfter": 1,
+   "id": "P15"
+  },
+  {
+   "family": "Next.js app",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 26,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 0,
+   "itemsAfter": 0,
+   "boundaryItemsAfter": 0,
+   "id": "P16"
+  },
+  {
+   "family": "Python API / service",
+   "initial": "AGENTS.md",
+   "action": "updated (stale)",
+   "loc": 25,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 2,
+   "itemsAfter": 0,
+   "boundaryItemsAfter": 0,
+   "id": "P17"
+  },
+  {
+   "family": "Python API / service",
+   "initial": "AGENTS.md",
+   "action": "updated (stale)",
+   "loc": 31,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 0,
+   "itemsAfter": 0,
+   "boundaryItemsAfter": 0,
+   "id": "P18"
+  },
+  {
+   "family": "Python API / service",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 35,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 0,
+   "itemsAfter": 0,
+   "boundaryItemsAfter": 0,
+   "id": "P19"
+  },
+  {
+   "family": "Static / content",
+   "initial": "none",
+   "action": "skipped: no code",
+   "loc": null,
+   "before": null,
+   "after": null,
+   "itemsBefore": 0,
+   "itemsAfter": 0,
+   "boundaryItemsAfter": 0,
+   "id": "P20"
+  },
+  {
+   "family": "Static / content",
+   "initial": "none",
+   "action": "skipped: profile README only",
+   "loc": null,
+   "before": null,
+   "after": null,
+   "itemsBefore": 0,
+   "itemsAfter": 0,
+   "boundaryItemsAfter": 0,
+   "id": "P21"
+  },
+  {
+   "family": "Static / content",
+   "initial": "AGENTS.md",
+   "action": "unchanged",
+   "loc": 25,
+   "before": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "after": {
+    "e": 0,
+    "w": 0,
+    "i": 0
+   },
+   "itemsBefore": 1,
+   "itemsAfter": 1,
+   "boundaryItemsAfter": 0,
+   "id": "P22"
+  }
+ ]
+}
