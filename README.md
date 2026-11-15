@@ -13,6 +13,10 @@
   <a href="LICENSE">MIT</a> · Node ≥ 20 · zero runtime dependencies · offline and deterministic
 </p>
 
+<p align="center">
+  <img src="assets/demo.svg" alt="Terminal demo: agent-md-caregiver reports a renamed import, two missing npm scripts and a renamed path in AGENTS.md, then passes after the file is fixed" width="820">
+</p>
+
 **Documentation: [fsystemweb.github.io/agent-md-caregiver](https://fsystemweb.github.io/agent-md-caregiver/)**
 
 > **Status: v0.1.0, not yet on npm.** All eleven rules and the CLI work (`pretty`, `json`, `github` and `sarif` output); see the [changelog](CHANGELOG.md). The demo below is real output, checked by a test on every run. Until the first publish, run it from a clone: `node src/cli.js`.
@@ -108,7 +112,7 @@ AGENTS.md
 1 file checked: 4 error(s), 0 warning(s), 0 info.
 ```
 
-The exit code is `1`. `test/readme-demo.test.js` rebuilds that repo and checks this output line by line, so the example cannot drift from the tool.
+The exit code is `1`. `test/readme-demo.test.js` rebuilds that repo and checks this output line by line, so the example cannot drift from the tool. The animation at the top of this page replays the same session plus the fix; `npm run demo` regenerates it and `test/demo-svg.test.js` fails when it is stale.
 
 ## Usage
 
