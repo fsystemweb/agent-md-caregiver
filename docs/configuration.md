@@ -9,7 +9,7 @@ title: Configuration
 An optional file in the repo root:
 
 ```json
-{ "maxLines": 200, "strict": false, "rules": { "AMC008": "off", "AMC006": "error" }, "ignore": ["tools/skills/**"] }
+{ "maxLines": 200, "strict": false, "rules": { "AMC008": "off", "AMC006": "error" }, "ignore": ["tools/generated/**"] }
 ```
 
 | Key | Type | Meaning |
@@ -23,45 +23,40 @@ An invalid file is an error (exit code `2`), never silently ignored. Unknown key
 
 ## Skipped files
 
-The tool reviews the instruction files written for **this** repo. Files vendored from third parties are not yours to fix, and a fix would be overwritten on the next update, so they are skipped.
+The tool checks the instruction files written for **this** repo. Skills installed by AI coding agents, and the agents' own folders, are not yours to fix, so they are skipped by default.
 
-### Built-in exclusions
+### Default: agent skills and tool folders
 
-An instruction file inside one of these directories, at any depth, is never checked:
+An instruction file inside one of these folders, at any depth, is skipped:
 
-| Directory | Usually holds |
-|---|---|
-| `.agent/skills/`, `.claude/skills/` | Installed agent skills |
-| `.cursor/`, `.codex/` | Editor and tool configuration |
-| `vendor/`, `third_party/`, `third-party/` | Vendored code |
-| `node_modules/` | Dependencies |
+`.claude/skills/` · `.agent/skills/` · `.agents/skills/` · `.codex/` · `.cursor/` · `.gemini/`
 
-Only exact directory names count: `vendors/` or `.agent/AGENTS.md` are still checked. There is no switch to turn these off.
+Only these exact folders count: `.claude/CLAUDE.md` or `skills/AGENTS.md` are still checked.
+
+### Checking skills anyway
+
+- `--include-skills` checks every skill and tool folder in the run.
+- Naming a path checks it: `agent-md-caregiver .claude/skills/pdf` or `agent-md-caregiver .claude/skills/pdf/CLAUDE.md`. Naming a parent such as `.` or `apps` does not pull skills in.
 
 ### `ignore`
 
-For anything the defaults miss, list globs in `ignore`:
+To skip other files, list globs in `ignore`:
 
 ```json
-{ "ignore": ["tools/skills/**", "examples/", "**/generated/CLAUDE.md"] }
+{ "ignore": ["tools/generated/**", "examples"] }
 ```
 
-- Patterns are relative to the repo root and use `/`. `*` and `?` stay within one path segment, `**` crosses directories, `[...]` classes are supported.
-- A pattern that names a directory skips everything under it (`examples` and `examples/` are the same).
-- Use `**/` to match at any depth (`**/fixtures`).
-- Each entry must match at least one instruction file. A stale entry, for example after the vendored folder was deleted, is an error (exit `2`) until you remove it.
-- Entries that are not strings, are empty, start with `/` or `!`, contain `..` or are not valid globs are errors.
-
-### Paths on the command line
-
-Exclusions also apply to paths you pass: `agent-md-caregiver vendor/x/AGENTS.md` checks nothing and reports the file as skipped.
+- Patterns are relative to the repo root. `*` stays in one folder, `**` crosses folders, so use `**/fixtures` for any depth.
+- A folder name skips everything under it (`examples` and `examples/` are the same).
+- A pattern that matches nothing is fine. An entry that is not a non-empty string or not a valid glob is an error (exit `2`).
+- Naming an ignored path on the command line checks it. `--include-skills` does not undo `ignore`.
 
 ### Output
 
-Skipped files are never parsed, so they produce no findings and no review items. They are listed so nothing disappears silently:
+Skipped files are never read, so they produce no findings and no review items. They are still listed:
 
+- `--format pretty`: a `Skipped N agent skill or ignored files` line.
 - `--format json` and `--format agent`: a top-level `skipped` array of `{ "file", "reason" }`.
-- `--format pretty`: a `Skipped N vendored or ignored files` line.
 
 ## Precedence
 

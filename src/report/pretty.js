@@ -29,7 +29,7 @@ export function formatPretty(result, { color }) {
   const files = `${result.files.length} file${result.files.length === 1 ? '' : 's'} checked`;
   const skipped = result.skipped ?? [];
   if (skipped.length) {
-    lines.push(paint('dim', `Skipped ${skipped.length} vendored or ignored file${skipped.length === 1 ? '' : 's'} (--format json lists them).`));
+    lines.push(paint('dim', `Skipped ${skipped.length} agent skill or ignored file${skipped.length === 1 ? '' : 's'} (--include-skills checks skills; --format json lists them).`));
   }
   if (result.files.length === 0) {
     lines.push(skipped.length ? 'No instruction files to check.' : 'No instruction files found (looked for AGENTS.md, CLAUDE.md, codex.md).');

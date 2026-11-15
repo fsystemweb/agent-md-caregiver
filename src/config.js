@@ -22,7 +22,7 @@ const KEYS = ['ignore', 'maxLines', 'rules', 'strict'];
  * usage error (exit 2), because silently ignoring a typo'd config would hide what the user asked for.
  *
  * ```json
- * { "maxLines": 200, "strict": false, "rules": { "AMC008": "off" }, "ignore": ["tools/skills/**"] }
+ * { "maxLines": 200, "strict": false, "rules": { "AMC008": "off" }, "ignore": ["tools/generated/**"] }
  * ```
  * @param {string} root
  * @returns {Config}
@@ -69,7 +69,7 @@ export function loadConfig(root) {
     }
   }
   if ('ignore' in data) {
-    if (!Array.isArray(data.ignore)) throw bad('"ignore" must be an array of globs like ["tools/skills/**"]');
+    if (!Array.isArray(data.ignore)) throw bad('"ignore" must be an array of globs like ["tools/generated/**"]');
     for (const pattern of data.ignore) {
       const why = invalidIgnorePattern(pattern);
       if (why) throw bad(`"ignore" entry ${JSON.stringify(pattern)} ${why}`);

@@ -18,7 +18,7 @@ import { RULES } from './rules/index.js';
  * @typedef {object} LintResult
  * @property {string[]} files     Files checked, sorted.
  * @property {Finding[]} findings Sorted by file, line, column, rule id.
- * @property {import('./ignore.js').Skipped[]} skipped  Instruction files not checked (vendored or ignored), sorted.
+ * @property {import('./ignore.js').Skipped[]} skipped  Instruction files not checked (agent skills or `ignore`), sorted.
  */
 
 export const SEVERITY_RANK = { info: 1, warn: 2, error: 3 };

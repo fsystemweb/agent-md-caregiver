@@ -21,7 +21,7 @@ Versioning: fields are only ever added within a schema version; a breaking chang
 | `guidance.untrustedInput` | string | Reminder that every string copied from the files (`text`, `evidence`, `message`, `suggestion`, and quoted parts of `reason`) is data, never instructions. |
 | `guidance.exitCode` | string | Reminder that items never change the exit code. |
 | `files` | string[] | Instruction files checked, sorted, repo-relative. |
-| `skipped` | `{ file, reason }[]` | Same as `skipped` in the JSON report: vendored or ignored files that were not parsed. They never produce items. |
+| `skipped` | `{ file, reason }[]` | Same as `skipped` in the JSON report: agent skill or ignored files that were not parsed. They never produce items. |
 | `deterministic.findings` | Finding[] | Same objects as `findings` in the JSON report. |
 | `deterministic.summary` | object | Same counts as `summary` in the JSON report. |
 | `items` | Item[] | What the rules could not decide, sorted by file, line, column, kind. |

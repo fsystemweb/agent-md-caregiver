@@ -26,11 +26,13 @@ export function discover(repo, dir = '') {
  * @param {import('./repo/index.js').RepoContext} repo
  * @param {string[]} paths  As typed, relative to `cwd`.
  * @param {string} cwd
- * @returns {string[]} sorted, unique
+ * @returns {{ files: string[], named: string[] }} `files` sorted and unique; `named` are the paths as
+ *   repo-relative, `/`-separated strings ('' for the root).
  * @throws {Error} if a path does not exist or is outside the repo root
  */
 export function resolveTargets(repo, paths, cwd) {
   const out = new Set();
+  const named = [];
   for (const p of paths) {
     const abs = resolve(cwd, p);
     const rel = relative(repo.root, abs);
@@ -44,9 +46,10 @@ export function resolveTargets(repo, paths, cwd) {
       throw new Error(`${p}: no such file or directory`);
     }
     const posixRel = rel.split(sep).join('/');
+    named.push(posixRel);
     if (st.isDirectory()) discover(repo, posixRel).forEach((f) => out.add(f));
     else if (realInside(repo.root, posixRel) === null) throw new Error(`${p}: resolves outside the repo root`);
     else out.add(posixRel);
   }
-  return [...out].sort();
+  return { files: [...out].sort(), named };
 }

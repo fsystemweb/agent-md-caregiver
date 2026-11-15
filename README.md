@@ -39,6 +39,20 @@ Everyone writing agent instruction files has stale ones. A script gets renamed, 
 | `AMC010` legacy-filename | `codex.md`, or `CLAUDE.md` and `AGENTS.md` that have drifted apart |
 | `AMC011` duplicate-instruction | The same instruction twice |
 
+## Agent skills are skipped by default
+
+The tool checks the instruction files **you** wrote for this repo. Skills that AI coding agents install, and those agents' own folders, are not yours to fix, so their `AGENTS.md`, `CLAUDE.md` and `codex.md` files are skipped at any depth:
+
+`.claude/skills/` · `.agent/skills/` · `.agents/skills/` · `.codex/` · `.cursor/` · `.gemini/`
+
+| You want to | Do this |
+|---|---|
+| Check the skills too | `agent-md-caregiver --include-skills` |
+| Check one skill | Name it: `agent-md-caregiver .claude/skills/pdf` |
+| Skip other files | Add `"ignore": ["tools/generated/**"]` to `.agentmdcaregiver.json` |
+
+Nothing disappears silently: the report says how many files were skipped, and `--format json` / `--format agent` list each one under `skipped`. Details: [docs/configuration.md](docs/configuration.md#skipped-files).
+
 ## Compatibility
 
 JavaScript and TypeScript repos get every rule. Other stacks get the language-agnostic ones.
@@ -112,12 +126,10 @@ Exit codes: `0` clean · `1` findings at or above the threshold · `2` usage or 
 Suppress a false positive with `<!-- amc-ignore-next-line -->`. Tune severity with `--rule AMC007=off` or a `.agentmdcaregiver.json` in the repo root:
 
 ```json
-{ "maxLines": 200, "strict": false, "rules": { "AMC008": "off", "AMC006": "error" }, "ignore": ["tools/skills/**"] }
+{ "maxLines": 200, "strict": false, "rules": { "AMC008": "off", "AMC006": "error" }, "ignore": ["tools/generated/**"] }
 ```
 
 Command-line options win over the file. An invalid file is an error (exit 2), never silently ignored.
-
-Instruction files in vendored or tool directories (`.agent/skills/`, `.claude/skills/`, `.cursor/`, `.codex/`, `vendor/`, `third_party/`, `node_modules/`) are never checked: they were not written for your repo. Use `"ignore"` for anything else. Skipped files are listed under `skipped` in `--format json` and `--format agent`.
 
 ### In CI
 

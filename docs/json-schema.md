@@ -28,7 +28,7 @@ The output is deterministic. It contains no timestamps and no absolute paths, so
     }
   ],
   "skipped": [
-    { "file": ".agent/skills/react/AGENTS.md", "reason": "vendored or tool directory (.agent/skills/)" }
+    { "file": ".agent/skills/react/AGENTS.md", "reason": "agent skill or tool folder (.agent/skills/)" }
   ],
   "summary": { "files": 2, "errors": 0, "warnings": 0, "infos": 1 }
 }
@@ -45,7 +45,7 @@ The output is deterministic. It contains no timestamps and no absolute paths, so
 | `tool.version` | string | The version of the tool that produced the report. |
 | `files` | string[] | Every instruction file that was checked, sorted, relative to the repo root, `/` separated. |
 | `findings` | Finding[] | Sorted by `file`, `line`, `col`, then `ruleId`. Empty when the run is clean. |
-| `skipped` | `{ file, reason }[]` | Instruction files found but not checked: inside a vendored or tool directory, or matched by `ignore` in the config. Sorted by `file`. Empty when nothing was skipped. See [Skipped files](configuration.md#skipped-files). |
+| `skipped` | `{ file, reason }[]` | Instruction files found but not checked: inside an agent skill or tool folder, or matched by `ignore` in the config. Sorted by `file`. Empty when nothing was skipped. See [Skipped files](configuration.md#skipped-files). |
 | `summary` | object | Counts, see below. |
 
 ### Finding
