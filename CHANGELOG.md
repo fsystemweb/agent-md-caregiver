@@ -5,6 +5,7 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 ## [Unreleased]
 
 ### Added
+- Animated terminal demo at the top of the README (`assets/demo.svg`, #12): the README demo repo, the real CLI output, the fix as a `git diff`, and the clean re-run. `npm run demo` regenerates it with no dependencies, and a test fails when it is stale.
 - Security audit report for the first release (`docs/security/REPORT.md`, #18): two supervised runs of the Cloudflare security-audit skill, 8 low-severity findings, all fixed.
 - Documentation site (#15): Markdown in `docs/` served by GitHub Pages from `/docs` (no build step in the package): home, getting started, CLI reference, one page per rule `AMC000`-`AMC011` (kept in sync with `--explain` by a test), configuration, CI guide, compatibility, agent review and schemas. A test checks every relative link. `--docs` prints the site URL (offline), `--help` ends with it, and `homepage` in `package.json` points to it. No `postinstall` script, on purpose.
 - Agent review layer (#16): `--format agent` prints a versioned review handoff (`schemaVersion: 1`, documented in `docs/handoff-schema.md`) with what the rules could not decide: skipped commands, sections with nothing checkable, candidate contradictions and unchecked prose instructions. The package ships a Claude Code skill (`skills/agent-md-review`) with prompt-injection guidance. The tool still makes no network calls and runs no subprocess for it, and exit codes come from the deterministic rules only.
