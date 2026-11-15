@@ -111,7 +111,9 @@ Usage:
   agent-md-caregiver [paths...] [options]
 
 With no paths, finds AGENTS.md, CLAUDE.md and codex.md in the repo, including nested ones.
-A directory path checks the instruction files inside it.
+A directory path checks the instruction files inside it. Files in vendored or tool directories
+(.agent/skills, .claude/skills, .cursor, .codex, vendor, third_party, node_modules) and files
+matched by "ignore" in .agentmdcaregiver.json are skipped, even when passed as paths.
 
 Options:
   --root <dir>         Repo root (default: current directory)

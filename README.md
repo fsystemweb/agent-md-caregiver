@@ -112,10 +112,12 @@ Exit codes: `0` clean · `1` findings at or above the threshold · `2` usage or 
 Suppress a false positive with `<!-- amc-ignore-next-line -->`. Tune severity with `--rule AMC007=off` or a `.agentmdcaregiver.json` in the repo root:
 
 ```json
-{ "maxLines": 200, "strict": false, "rules": { "AMC008": "off", "AMC006": "error" } }
+{ "maxLines": 200, "strict": false, "rules": { "AMC008": "off", "AMC006": "error" }, "ignore": ["tools/skills/**"] }
 ```
 
 Command-line options win over the file. An invalid file is an error (exit 2), never silently ignored.
+
+Instruction files in vendored or tool directories (`.agent/skills/`, `.claude/skills/`, `.cursor/`, `.codex/`, `vendor/`, `third_party/`, `node_modules/`) are never checked: they were not written for your repo. Use `"ignore"` for anything else. Skipped files are listed under `skipped` in `--format json` and `--format agent`.
 
 ### In CI
 

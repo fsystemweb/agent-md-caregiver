@@ -8,7 +8,7 @@ title: CLI reference
 agent-md-caregiver [paths...] [options]
 ```
 
-With no paths, the tool finds `AGENTS.md`, `CLAUDE.md` and `codex.md` in the repo, including nested ones. A directory path checks the instruction files inside it. `agent-md-caregiver --help` prints the same information; a test keeps this page in sync with it.
+With no paths, the tool finds `AGENTS.md`, `CLAUDE.md` and `codex.md` in the repo, including nested ones. A directory path checks the instruction files inside it. Vendored files are skipped, even when passed as paths; see [Skipped files](configuration.md#skipped-files). `agent-md-caregiver --help` prints the same information; a test keeps this page in sync with it.
 
 ## Options
 

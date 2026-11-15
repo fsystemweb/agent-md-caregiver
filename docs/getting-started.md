@@ -21,7 +21,7 @@ From the repo root:
 npx agent-md-caregiver
 ```
 
-It finds `AGENTS.md`, `CLAUDE.md` and `codex.md`, including nested ones, and checks each against the repo. To check one file or a folder, pass it: `npx agent-md-caregiver AGENTS.md`.
+It finds `AGENTS.md`, `CLAUDE.md` and `codex.md`, including nested ones, and checks each against the repo. Files in vendored or tool directories, such as installed agent skills, are skipped ([details](configuration.md#skipped-files)). To check one file or a folder, pass it: `npx agent-md-caregiver AGENTS.md`.
 
 No instruction file yet? `npx agent-md-caregiver --init` prints a recommended skeleton, and `--init --write` creates `AGENTS.md` if it does not exist.
 

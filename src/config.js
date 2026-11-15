@@ -2,17 +2,19 @@ import { existsSync } from 'node:fs';
 import { readTextInside } from './repo/safe-read.js';
 import { join } from 'node:path';
 import { UsageError } from './args.js';
+import { invalidIgnorePattern } from './ignore.js';
 import { findRule } from './rules/index.js';
 
 export const CONFIG_FILE = '.agentmdcaregiver.json';
 const LEVELS = ['off', 'info', 'warn', 'error'];
-const KEYS = ['maxLines', 'rules', 'strict'];
+const KEYS = ['ignore', 'maxLines', 'rules', 'strict'];
 
 /**
  * @typedef {object} Config
  * @property {number} [maxLines]
  * @property {Record<string, import('./rules/index.js').Severity | 'off'>} rules  Keyed by canonical rule id.
  * @property {boolean} [strict]
+ * @property {string[]} ignore  Globs of instruction files not to check, relative to the repo root.
  */
 
 /**
@@ -20,7 +22,7 @@ const KEYS = ['maxLines', 'rules', 'strict'];
  * usage error (exit 2), because silently ignoring a typo'd config would hide what the user asked for.
  *
  * ```json
- * { "maxLines": 200, "strict": false, "rules": { "AMC008": "off", "AMC006": "error" } }
+ * { "maxLines": 200, "strict": false, "rules": { "AMC008": "off" }, "ignore": ["tools/skills/**"] }
  * ```
  * @param {string} root
  * @returns {Config}
@@ -28,7 +30,7 @@ const KEYS = ['maxLines', 'rules', 'strict'];
  */
 export function loadConfig(root) {
   const path = join(root, CONFIG_FILE);
-  if (!existsSync(path)) return { rules: {} };
+  if (!existsSync(path)) return { rules: {}, ignore: [] };
   const bad = (msg) => new UsageError(`${CONFIG_FILE}: ${msg}`);
   const raw = readTextInside(root, CONFIG_FILE);
   if (raw === null) throw bad('cannot be read, or is a symlink that leaves the repo root (such links are not followed)');
@@ -43,7 +45,7 @@ export function loadConfig(root) {
     if (!KEYS.includes(key)) throw bad(`unknown key "${key}". Known keys: ${KEYS.join(', ')}`);
   }
   /** @type {Config} */
-  const config = { rules: {} };
+  const config = { rules: {}, ignore: [] };
   if ('maxLines' in data) {
     if (!Number.isInteger(data.maxLines) || data.maxLines < 1) throw bad('"maxLines" must be a positive integer');
     config.maxLines = data.maxLines;
@@ -65,6 +67,14 @@ export function loadConfig(root) {
       }
       config.rules[rule.id] = /** @type {any} */ (level.toLowerCase());
     }
+  }
+  if ('ignore' in data) {
+    if (!Array.isArray(data.ignore)) throw bad('"ignore" must be an array of globs like ["tools/skills/**"]');
+    for (const pattern of data.ignore) {
+      const why = invalidIgnorePattern(pattern);
+      if (why) throw bad(`"ignore" entry ${JSON.stringify(pattern)} ${why}`);
+    }
+    config.ignore = [...data.ignore];
   }
   return config;
 }

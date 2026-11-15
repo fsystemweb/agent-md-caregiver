@@ -27,8 +27,12 @@ export function formatPretty(result, { color }) {
   if (lines.length) lines.push('');
   const n = (/** @type {string} */ s) => result.findings.filter((f) => f.severity === s).length;
   const files = `${result.files.length} file${result.files.length === 1 ? '' : 's'} checked`;
+  const skipped = result.skipped ?? [];
+  if (skipped.length) {
+    lines.push(paint('dim', `Skipped ${skipped.length} vendored or ignored file${skipped.length === 1 ? '' : 's'} (--format json lists them).`));
+  }
   if (result.files.length === 0) {
-    lines.push('No instruction files found (looked for AGENTS.md, CLAUDE.md, codex.md).');
+    lines.push(skipped.length ? 'No instruction files to check.' : 'No instruction files found (looked for AGENTS.md, CLAUDE.md, codex.md).');
   } else if (result.findings.length === 0) {
     lines.push(paint('green', `${files}, no problems found.`));
   } else {

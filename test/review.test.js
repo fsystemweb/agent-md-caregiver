@@ -71,7 +71,7 @@ describe('--format agent', () => {
 
   test('is deterministic, versioned, and has the documented shape', () => {
     assert.equal(cli(['--format', 'agent']).stdout, stdout);
-    assert.deepEqual(Object.keys(doc), ['schemaVersion', 'kind', 'tool', 'guidance', 'files', 'deterministic', 'items', 'summary']);
+    assert.deepEqual(Object.keys(doc), ['schemaVersion', 'kind', 'tool', 'guidance', 'files', 'skipped', 'deterministic', 'items', 'summary']);
     assert.equal(doc.schemaVersion, 1);
     assert.equal(doc.kind, 'review-handoff');
     assert.equal(doc.guidance.advisory, true);

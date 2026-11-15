@@ -3,9 +3,10 @@ import { existsSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DEFAULT_MAX_LINES, DOCS_URL, HELP, parseCli, UsageError } from './args.js';
-import { loadConfig } from './config.js';
+import { CONFIG_FILE, loadConfig } from './config.js';
 import { discover, resolveTargets } from './discover.js';
 import { INIT_TEMPLATE } from './init-template.js';
+import { applyIgnores, staleIgnores } from './ignore.js';
 import { exitCodeFor, lint } from './lint.js';
 import { formatAgent, formatGithub, formatJson, formatPretty, formatSarif } from './report/index.js';
 import { visible } from './report/sanitize.js';
@@ -87,12 +88,21 @@ function runInner(argv, io) {
   }
 
   const repo = createRepoContext(root);
-  const files = opts.paths.length ? resolveTargets(repo, opts.paths, io.cwd) : discover(repo);
   const config = loadConfig(root);
+  const stale = staleIgnores(discover(repo), config.ignore);
+  if (stale.length) {
+    throw new UsageError(
+      `${CONFIG_FILE}: "ignore" ${stale.length === 1 ? 'entry' : 'entries'} ${stale.map((p) => JSON.stringify(p)).join(', ')} ` +
+        `${stale.length === 1 ? 'matches' : 'match'} no instruction file. Remove stale entries.`,
+    );
+  }
+  const targets = opts.paths.length ? resolveTargets(repo, opts.paths, io.cwd) : discover(repo);
+  const { files, skipped } = applyIgnores(targets, config.ignore);
   const result = lint(repo, files, {
     maxLines: opts.maxLines ?? config.maxLines ?? DEFAULT_MAX_LINES,
     ruleLevels: { ...config.rules, ...opts.ruleLevels },
   });
+  result.skipped = skipped;
 
   if (opts.format === 'json') {
     io.stdout.write(formatJson(result, { version: pkg.version }));

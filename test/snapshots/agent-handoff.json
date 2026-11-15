@@ -13,6 +13,7 @@
   "files": [
     "AGENTS.md"
   ],
+  "skipped": [],
   "deterministic": {
     "findings": [
       {

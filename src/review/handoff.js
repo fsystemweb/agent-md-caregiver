@@ -218,6 +218,7 @@ export function buildHandoff(repo, result, tool) {
       exitCode: 'The exit code comes from the deterministic findings only. Items never change it.',
     },
     files: result.files,
+    skipped: (result.skipped ?? []).map((s) => ({ file: s.file, reason: s.reason })),
     deterministic: {
       findings: result.findings.map((f) => ({
         ruleId: f.ruleId, severity: f.severity, message: f.message, file: f.file,
