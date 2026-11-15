@@ -87,6 +87,10 @@ describe('AMC009 missing-boundaries', () => {
     assert.deepEqual(brief(run('AMC009', '# P\n- Always: test.\n- Never: push to main.\n')), [[1, 1, 'No rule about secrets']]);
   });
 
+  test('a path alias in a code span is not an import, so the file is still checked', () => {
+    assert.equal(run('AMC009', '# P\n\nUI never imports `@/lib/store`.\n').length, 2);
+  });
+
   test('silent with a Boundaries heading and a secrets rule', () => {
     assert.deepEqual(run('AMC009', '# P\n\n## Boundaries\n- Keep .env out of git.\n'), []);
   });
