@@ -23,6 +23,7 @@ export function formatJson(result, tool) {
       evidence: f.evidence,
       suggestion: f.suggestion ?? null,
     })),
+    skipped: (result.skipped ?? []).map((s) => ({ file: s.file, reason: s.reason })),
     summary: {
       files: result.files.length,
       errors: count('error'),

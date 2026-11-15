@@ -145,3 +145,12 @@ export function compileGlob(glob, { floating = false } = {}) {
     },
   };
 }
+
+/**
+ * Can `glob` be compiled? False when it is too long or has a malformed `[...]` class.
+ * @param {string} glob
+ * @returns {boolean}
+ */
+export function isValidGlob(glob) {
+  return tokenize(glob) !== null;
+}

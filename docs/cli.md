@@ -8,7 +8,7 @@ title: CLI reference
 agent-md-caregiver [paths...] [options]
 ```
 
-With no paths, the tool finds `AGENTS.md`, `CLAUDE.md` and `codex.md` in the repo, including nested ones. A directory path checks the instruction files inside it. `agent-md-caregiver --help` prints the same information; a test keeps this page in sync with it.
+With no paths, the tool finds `AGENTS.md`, `CLAUDE.md` and `codex.md` in the repo, including nested ones. A directory path checks the instruction files inside it. Agent skill folders are skipped unless you pass `--include-skills` or name them as a path; see [Skipped files](configuration.md#skipped-files). `agent-md-caregiver --help` prints the same information; a test keeps this page in sync with it.
 
 ## Options
 
@@ -19,6 +19,7 @@ With no paths, the tool finds `AGENTS.md`, `CLAUDE.md` and `codex.md` in the rep
 | `--max-lines <n>` | Line budget for instruction files (default: 150). |
 | `--rule <id>=<level>` | Override a rule: `off`, `info`, `warn` or `error`. Repeatable. |
 | `--strict` | Warnings fail the run too. |
+| `--include-skills` | Also check agent skill and tool folders (`.claude/skills/`, `.codex/`, ...), which are skipped by default. |
 | `--init` | Print the recommended `AGENTS.md` skeleton (writes nothing). |
 | `--write` | With `--init`: create `AGENTS.md` at the root if it does not exist. The only write path. |
 | `--explain <id>` | Show what a rule checks and how to fix it. |

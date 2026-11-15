@@ -219,7 +219,7 @@ describe('reporters', () => {
     const b = cli(['--format', 'json']).stdout;
     assert.equal(a, b);
     const report = JSON.parse(a);
-    assert.deepEqual(Object.keys(report), ['schemaVersion', 'tool', 'files', 'findings', 'summary']);
+    assert.deepEqual(Object.keys(report), ['schemaVersion', 'tool', 'files', 'findings', 'skipped', 'summary']);
     assert.equal(report.schemaVersion, 1);
     assert.deepEqual(report.tool, { name: 'agent-md-caregiver', version: PKG.version });
     assert.deepEqual(Object.keys(report.findings[0]), [

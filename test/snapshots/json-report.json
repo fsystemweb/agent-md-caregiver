@@ -42,6 +42,7 @@
       "suggestion": "Rename it: `git mv packages/b/codex.md packages/b/AGENTS.md`."
     }
   ],
+  "skipped": [],
   "summary": {
     "files": 4,
     "errors": 0,

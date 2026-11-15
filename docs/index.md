@@ -17,6 +17,10 @@ file -> claims -> rules -> findings
 
 It reads the file, extracts every claim it can verify (commands, paths, imports, directives), and checks each one against your file tree, `package.json` scripts, `pyproject.toml`, lockfiles and git history. Each finding has an exact line and column, the offending text, and a concrete suggestion.
 
+## Agent skills are skipped
+
+Only the instruction files you wrote for the repo are checked. Skills installed by AI coding agents (`.claude/skills/`, `.agent/skills/`, `.agents/skills/`) and agent folders (`.codex/`, `.cursor/`, `.gemini/`) are skipped by default. Run with `--include-skills`, or name a skill's path, to check them. See [Skipped files](configuration.md#skipped-files).
+
 ## 30-second example
 
 ```bash

@@ -17,6 +17,7 @@ export class UsageError extends Error {}
  * @property {number | undefined} maxLines  Undefined when not given, so the config file or the default applies.
  * @property {Record<string, import('./rules/index.js').Severity | 'off'>} ruleLevels
  * @property {boolean} strict
+ * @property {boolean} includeSkills
  * @property {boolean} init
  * @property {boolean} write
  * @property {string | undefined} explain
@@ -43,6 +44,7 @@ export function parseCli(argv) {
         'max-lines': { type: 'string' },
         rule: { type: 'string', multiple: true },
         strict: { type: 'boolean' },
+        'include-skills': { type: 'boolean' },
         init: { type: 'boolean' },
         write: { type: 'boolean' },
         explain: { type: 'string' },
@@ -95,6 +97,7 @@ export function parseCli(argv) {
     maxLines,
     ruleLevels,
     strict: Boolean(values.strict),
+    includeSkills: Boolean(values['include-skills']),
     init: Boolean(values.init),
     write: Boolean(values.write),
     explain: values.explain,
@@ -111,7 +114,9 @@ Usage:
   agent-md-caregiver [paths...] [options]
 
 With no paths, finds AGENTS.md, CLAUDE.md and codex.md in the repo, including nested ones.
-A directory path checks the instruction files inside it.
+A directory path checks the instruction files inside it. Agent skill and tool folders
+(.claude/skills, .agent/skills, .agents/skills, .codex, .cursor, .gemini) and files matched by
+"ignore" in .agentmdcaregiver.json are skipped, unless you name them as paths.
 
 Options:
   --root <dir>         Repo root (default: current directory)
@@ -120,6 +125,7 @@ Options:
   --max-lines <n>      Line budget for instruction files (default: ${DEFAULT_MAX_LINES})
   --rule <id>=<level>  Override a rule: off, info, warn or error. Repeatable.
   --strict             Warnings fail the run too
+  --include-skills     Also check agent skill and tool folders (skipped by default)
   --init               Print the recommended AGENTS.md skeleton (writes nothing)
   --write              With --init: create AGENTS.md at the root if it does not exist
   --explain <id>       Show what a rule checks and how to fix it

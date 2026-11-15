@@ -6,6 +6,7 @@ import { DEFAULT_MAX_LINES, DOCS_URL, HELP, parseCli, UsageError } from './args.
 import { loadConfig } from './config.js';
 import { discover, resolveTargets } from './discover.js';
 import { INIT_TEMPLATE } from './init-template.js';
+import { skipper, splitFiles } from './ignore.js';
 import { exitCodeFor, lint } from './lint.js';
 import { formatAgent, formatGithub, formatJson, formatPretty, formatSarif } from './report/index.js';
 import { visible } from './report/sanitize.js';
@@ -87,12 +88,15 @@ function runInner(argv, io) {
   }
 
   const repo = createRepoContext(root);
-  const files = opts.paths.length ? resolveTargets(repo, opts.paths, io.cwd) : discover(repo);
   const config = loadConfig(root);
+  const skip = skipper(config.ignore, { includeSkills: opts.includeSkills });
+  const targets = opts.paths.length ? resolveTargets(repo, opts.paths, io.cwd) : { files: discover(repo), named: [] };
+  const { files, skipped } = splitFiles(targets.files, skip, targets.named);
   const result = lint(repo, files, {
     maxLines: opts.maxLines ?? config.maxLines ?? DEFAULT_MAX_LINES,
     ruleLevels: { ...config.rules, ...opts.ruleLevels },
   });
+  result.skipped = skipped;
 
   if (opts.format === 'json') {
     io.stdout.write(formatJson(result, { version: pkg.version }));
