@@ -15,6 +15,8 @@ const URL_LIKE = /^(?:[a-z][a-z0-9+.-]*:\/\/|mailto:|tel:|data:)/i;
 const GLOB_CHARS = /[*?[\]{}]/;
 /** `@types/node`, `@scope/pkg`: an npm package name, not an import. */
 const PACKAGE_SPEC = /^@[\w.-]+\/[\w.-]+$/;
+/** `@/lib/store`, `@~/lib`: a TypeScript or bundler path alias, not an `@` import of an absolute path. */
+const ALIAS_TARGET = /^[/~]/;
 
 /**
  * Does this string look like a file or directory path we can check against the tree?
@@ -123,6 +125,7 @@ export function pathFromSpan(span, file, lineNo) {
   const { content } = span;
   if (content.startsWith('@')) {
     const target = content.slice(1);
+    if (ALIAS_TARGET.test(target)) return null;
     if (looksLikePath(content) && looksLikePath(target)) {
       return makeClaim('path', stripLineRef(target), file, lineNo, span.col + 1, span.raw, { via: 'import' });
     }
@@ -167,6 +170,6 @@ export function importFromLine(masked, file, lineNo) {
   const m = /^(\s*(?:[-*+]\s+|\d+\.\s+)?)@([^\s`]+)/.exec(masked);
   if (!m) return null;
   const target = m[2].replace(/[.,;:!)]+$/, '');
-  if (!looksLikePath(target, { isImport: true })) return null;
+  if (ALIAS_TARGET.test(target) || !looksLikePath(target, { isImport: true })) return null;
   return makeClaim('path', stripLineRef(target), file, lineNo, m[1].length + 2, m[0].trimStart(), { via: 'import' });
 }

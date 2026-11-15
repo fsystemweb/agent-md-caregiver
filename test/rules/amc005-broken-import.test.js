@@ -98,6 +98,11 @@ describe('AMC005 stays silent', () => {
     silent('@AGENTS.md\n[report](dist/report.html)', { '.gitignore': 'dist/\n' });
   });
 
+  test('a path alias such as `@/lib/store` is not an import', () => {
+    silent('@AGENTS.md\nUI code never imports `@/lib/store` or `@~/lib/x.ts`.');
+    silent('@AGENTS.md\n@/lib/store is the store.');
+  });
+
   test('targets outside the repo cannot be checked', () => {
     silent('@AGENTS.md\n[x](../../shared/notes.md)');
   });
