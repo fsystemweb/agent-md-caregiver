@@ -19,8 +19,6 @@
 
 **Documentation: [fsystemweb.github.io/agent-md-caregiver](https://fsystemweb.github.io/agent-md-caregiver/)**
 
-> **Status: v0.1.0, not yet on npm.** All eleven rules and the CLI work (`pretty`, `json`, `github` and `sarif` output); see the [changelog](CHANGELOG.md). The demo below is real output, checked by a test on every run. Until the first publish, run it from a clone: `node src/cli.js`.
-
 ## Why
 
 Everyone writing agent instruction files has stale ones. A script gets renamed, a folder moves, the team switches to pnpm, and the file keeps telling agents to run commands that no longer exist. Agents *do follow* these files, so every stale line wastes tokens and sends the agent in the wrong direction, in every session. No linter checks them.
